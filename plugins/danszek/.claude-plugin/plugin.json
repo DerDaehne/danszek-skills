@@ -2,5 +2,8 @@
   "name": "danszek",
   "description": "Five skills distilled from agent-driven development practice: collaboration, refinement, review, orchestration, code style.",
   "version": "0.1.0",
-  "author": { "name": "danszek" }
+  "author": {
+    "name": "danszek"
+  },
+  "license": "CC-BY-4.0"
 }

@@ -88,3 +88,8 @@ into its system prompt, project instructions or `AGENTS.md`. Keep the `descripti
   ```
 
 The skills are refined in regular retrospectives as new lessons come in.
+
+## License
+
+[CC BY 4.0](LICENSE) — share and adapt freely, including commercially, with attribution:
+"danszek-skills by danszek, CC BY 4.0" plus a link to this repository and a note if you changed it.
