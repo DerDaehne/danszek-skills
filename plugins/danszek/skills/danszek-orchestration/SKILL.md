@@ -13,6 +13,8 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 | Cross-cutting architecture consolidation | top reasoning model |
 | Experiments, pilots, cheap refinement | local model |
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
+- Refiners **never promote their own work** to ready: an independent reviewer approves the refinement (and any unsplit L ticket).
+- When several planning agents work in the same area, tell each about tickets the others just created or split — otherwise they re-specify the same scope.
 - Keep author and reviewer **continuous**: resume the same agents for fix rounds and re-reviews; they keep context and re-reviews take minutes.
 
 ## Flow
@@ -24,6 +26,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Areas owned by parallel agents (do not touch).
 - Privacy rules; never read/copy/link private pattern files; the orchestrator runs the private scan.
 - Repository hygiene (no destructive resets, stop processes by PID).
+- Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID.
 - Which documentation to update and link.
 - A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
@@ -44,6 +47,9 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - **Over-deliberation:** thinking models can spend the whole output budget on one reasoning step. Set a reasoning budget with an "act now" message; on a length stop, resume with "plan was good, do not re-plan, small steps: test → fix → commit".
 - **Stagnation:** repeated failed exact-match edits, byte-level inspection loops, consecutive steps at the reasoning budget without file changes → stop, give a recovery hint (replace by line number or rewrite the block).
 - **Context:** for long fix rounds start a **fresh run with injected state** (rules, ticket, branch log, open findings) instead of growing one session into compaction; never interrupt a compaction.
+- **Fast non-thinking coders** fail differently: they act immediately but lose track of their own uncommitted work and "make the test pass" with invented state. Enforce commit discipline mechanically (dirty worktree + N calls without commit, counted across continuations) and let review judge the design.
+- Hints to stuck agents should be **deterministic**: derived from run events, git state and ticket text (idle calls, history-only reads, calls since last commit, files outside the ticket) — reproducible by the runner without another model.
+- Consider a **plan/act split**: a thinking model plans small steps, a fast coder executes them, the runner enforces commits.
 - One model server, one model at a time: serialize GPU jobs to avoid swaps mid-run.
 - Fair comparisons replay the same task: same base commit, prompt, sandbox and review strictness, only the model or harness changes.
 

@@ -27,7 +27,8 @@ description: Turn raw tickets into implementable, reviewable work items for agen
 
 ## Hand-off
 - No open product decision → ready. Otherwise leave the question with options and a recommendation.
-- Prefer that a **different model or person reviews the refinement** before it becomes ready; small corrections can be made directly and listed as binding clarifications.
+- A **different model or person reviews the refinement** before it becomes ready — the refiner never promotes its own work. Small corrections can be made directly and listed as binding clarifications.
+- Before creating or splitting tickets, check what was created or changed recently in the same area (other planners may be working in parallel).
 
 ## Reviewing a refinement
 Facts match the code? Question premises correct? Interplay criteria present? Large tickets split or justified? Tasks equal criteria? Dependency directions right? Typos don't block; wrong premises do.

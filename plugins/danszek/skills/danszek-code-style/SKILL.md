@@ -12,6 +12,7 @@ description: Code style for agent-written code that humans must understand by re
 - **Doc comments only for non-obvious contracts** (units, side effects, thrown errors, invariants), one sentence. When a contract changes, update the doc of every function involved.
 - **One repository language** for identifiers, comments, test names, commit messages and docs. User-facing strings follow the product language and stay grammatically correct.
 - Models imitate the surrounding code more than written rules: keep the repository language even where old code deviates.
+- **Derive, don't store:** never add persistent state (marker files, name suffixes, extra columns) to make a test pass when the fact can be derived from data you already have.
 - **Lean means no unneeded features or abstractions — not dense code.** No speculative defensive branches: protect only against what can happen in the actual concurrency model.
 
 ## Tests
