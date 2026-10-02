@@ -17,7 +17,7 @@ description: Independent, evidence-based code review — re-run everything, diff
 4. **Invented state:** look for new persistent state, marker files or naming conventions introduced only to make a test pass when the information is already derivable from existing data.
 5. **Interplay:** check the callers and siblings that consume the same data as the changed code.
 6. **Lifecycle and concurrency:** timers cleared on every exit path, no double completion, resources (slots, processes, temp dirs) released, cleanup also when a helper's own assertion fails.
-7. **Style and hygiene** per the repository's guide: readable code over comments, language rules, no change narration or internal references in code, honest commit types, no unjustified new dependencies.
+7. **Style and hygiene** per the repository's guide: nesting depth and function length limits, readable code over comments, language rules, no change narration or internal references in code, honest commit types, no unjustified new dependencies.
 8. **Docs:** the linked documentation matches the code; fix small inaccuracies yourself, otherwise report.
 9. **Privacy:** scan the diff and messages for internal references; never touch private pattern files; stop every process you started.
 

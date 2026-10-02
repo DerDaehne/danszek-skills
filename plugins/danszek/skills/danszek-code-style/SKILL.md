@@ -7,6 +7,8 @@ description: Code style for agent-written code that humans must understand by re
 
 ## Core
 - **Readable code over comments.** Intent through names, small well-named functions, explicit types and plain control flow. A few more lines following best practice beat one dense line plus a comment.
+- **Shallow nesting:** at most 2 levels of nested blocks inside a function, 3 only as a justified exception — flatten with early returns, guard clauses and extracted functions.
+- **Short functions:** a function fits on one normal screen (about 40 lines); longer → split into well-named steps. Enforce both with a linter (e.g. `max-depth`, `max-lines-per-function`) rather than by review alone.
 - **Comment only what code cannot say:** a non-obvious *why*, a workaround (name the cause), a security or concurrency invariant, a deliberate simplification marked with its limit and upgrade path. One short line.
 - **No comments that** restate code, narrate changes ("now uses…", "fixed…") or reference tickets, decision records or planning content. History belongs in commit messages, knowledge in documentation.
 - **Doc comments only for non-obvious contracts** (units, side effects, thrown errors, invariants), one sentence. When a contract changes, update the doc of every function involved.
