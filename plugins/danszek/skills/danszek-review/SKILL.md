@@ -18,8 +18,9 @@ description: Independent, evidence-based code review — re-run everything, diff
 5. **Interplay:** check the callers and siblings that consume the same data as the changed code.
 6. **Lifecycle and concurrency:** timers cleared on every exit path, no double completion, resources (slots, processes, temp dirs) released, cleanup also when a helper's own assertion fails.
 7. **Style and hygiene** per the repository's guide: nesting depth and function length limits, readable code over comments, language rules, no change narration or internal references in code, honest commit types, no unjustified new dependencies.
-8. **Docs:** the linked documentation matches the code; fix small inaccuracies yourself, otherwise report.
-9. **Privacy:** scan the diff and messages for internal references; never touch private pattern files; stop every process you started.
+8. **Numbers:** every cost, size or duration in docs and reports comes from a measurement with its source; estimates are labelled as such (an unmeasured cost estimate was off by more than an order of magnitude once).
+9. **Docs:** the linked documentation matches the code; fix small inaccuracies yourself, otherwise report.
+10. **Privacy:** scan the diff and messages for internal references; never touch private pattern files; stop every process you started.
 
 ## Findings (forwardable verbatim to the author)
 `N. path:line — category, severity[, BLOCKING]. What is wrong (repro or surviving mutant). Fix: concrete change. Required test: what must exist and fail without the fix.`

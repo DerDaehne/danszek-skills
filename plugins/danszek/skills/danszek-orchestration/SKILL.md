@@ -15,7 +15,10 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
 - Refiners **never promote their own work** to ready: an independent reviewer approves the refinement (and any unsplit L ticket).
 - When several planning agents work in the same area, tell each about tickets the others just created or split — otherwise they re-specify the same scope.
-- Keep author and reviewer **continuous**: resume the same agents for fix rounds and re-reviews; they keep context and re-reviews take minutes.
+- Keep author and reviewer **continuous**: resume the same agents for fix rounds and re-reviews; they keep context and re-reviews take minutes. Switch to a **fresh reviewer** once an agent's accumulated context gets very large — resuming then costs more than re-reading.
+- Every developer prompt asks for a **mutation self-check of each new test before reporting**; fix rounds otherwise add new code with toothless tests and cost extra review rounds.
+- Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run.
+- Splits made by an approver that move already-reviewed scope verbatim inherit the approval; only genuinely new scope needs another independent approval — otherwise approvals chain endlessly.
 
 ## Flow
 Ready (all blocking predecessors accepted) → developer agent: claim, short plan comment, own worktree and branch from current main, test first, tick tasks as they pass, work-log with real output → review → independent reviewer → findings back to the same author, or "review ok" + fast-forward merge → human acceptance stage. **Only the human closes tickets.**
@@ -26,6 +29,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Areas owned by parallel agents (do not touch).
 - Privacy rules; never read/copy/link private pattern files; the orchestrator runs the private scan.
 - Repository hygiene (no destructive resets, stop processes by PID).
+- Use `set -o pipefail` (or no pipe) when a command's failure must stop a chain — `cmd | tail && next` runs `next` even if `cmd` failed.
 - Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID.
 - Which documentation to update and link.
 - A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
