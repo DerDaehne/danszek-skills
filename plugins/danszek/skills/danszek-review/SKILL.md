@@ -14,13 +14,14 @@ description: Independent, evidence-based code review — re-run everything, diff
 1. Read the ticket with all comments (later decisions live there), the role instructions and the author's stated deviations.
 2. Verify each acceptance criterion with your own evidence. For UI: a real headless browser against the production build with fresh data — light/dark, narrow mobile width, reduced motion/transparency, keyboard focus, ARIA semantics. **Measure** (element positions, overflow, contrast) instead of eyeballing — measurements catch layout bugs screenshots hide.
 3. **Mutation probes** in a throwaway clone or stash (never destructive resets in shared trees): revert each fix alone → its test must fail; break the invariant each new test *names* → that test must fail. A surviving mutant is a finding unless you can show it is unobservable.
-4. **Invented state:** look for new persistent state, marker files or naming conventions introduced only to make a test pass when the information is already derivable from existing data.
-5. **Interplay:** check the callers and siblings that consume the same data as the changed code.
-6. **Lifecycle and concurrency:** timers cleared on every exit path, no double completion, resources (slots, processes, temp dirs) released, cleanup also when a helper's own assertion fails.
-7. **Style and hygiene** per the repository's guide: nesting depth and function length limits, readable code over comments, language rules, no change narration or internal references in code, honest commit types, no unjustified new dependencies.
-8. **Numbers:** every cost, size or duration in docs and reports comes from a measurement with its source; estimates are labelled as such (an unmeasured cost estimate was off by more than an order of magnitude once).
-9. **Docs:** the linked documentation matches the code; fix small inaccuracies yourself, otherwise report.
-10. **Privacy:** scan the diff and messages for internal references; never touch private pattern files; stop every process you started.
+4. **Delivery files** (CI/release workflows, container files): check names and paths against the target system's rules before the first run (e.g. registries require lowercase image names), defaults that make the artifact work without extra configuration, least-privilege permissions, pinned actions, language rules in comments.
+5. **Invented state:** look for new persistent state, marker files or naming conventions introduced only to make a test pass when the information is already derivable from existing data.
+6. **Interplay:** check the callers and siblings that consume the same data as the changed code.
+7. **Lifecycle and concurrency:** timers cleared on every exit path, no double completion, resources (slots, processes, temp dirs) released, cleanup also when a helper's own assertion fails.
+8. **Style and hygiene** per the repository's guide: nesting depth and function length limits, readable code over comments, language rules, no change narration or internal references in code, honest commit types, no unjustified new dependencies.
+9. **Numbers:** every cost, size or duration in docs and reports comes from a measurement with its source; estimates are labelled as such (an unmeasured cost estimate was off by more than an order of magnitude once).
+10. **Docs:** the linked documentation matches the code; fix small inaccuracies yourself, otherwise report.
+11. **Privacy:** scan the diff and messages for internal references; never touch private pattern files; stop every process you started.
 
 ## Findings (forwardable verbatim to the author)
 `N. path:line — category, severity[, BLOCKING]. What is wrong (repro or surviving mutant). Fix: concrete change. Required test: what must exist and fail without the fix.`
