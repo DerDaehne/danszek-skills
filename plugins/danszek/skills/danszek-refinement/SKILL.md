@@ -22,6 +22,7 @@ description: Turn raw tickets into implementable, reviewable work items for agen
 - **Edge cases become criteria**, not prose ("only future-dated entries exist", "equal timestamps", "a non-human actor tries the human-only action").
 - **Dependencies:** "A blocks B" means A must be finished before B starts. Read direction carefully; justify non-obvious links.
 - **Re-check inherited `blocks` links** when refining: links from an early planning round go stale. Keep one only if there is a real code or product dependency; otherwise remove it with a one-line reason, so a formal blocker never holds up, or gets silently ignored by, the developer.
+- One stale link found → **audit every link of that ticket at once**; stale links cluster around tickets from the same early planning round.
 - **Read comments** on the ticket and its related tickets — decisions made later live there.
 - No requirements beyond the ticket, the decision records and the comments; label assumptions.
 - Concrete numbers (thresholds, limits, sizes) with their source (configuration/catalog, not scattered constants).
