@@ -32,7 +32,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Privacy rules; never read/copy/link private pattern files; the orchestrator runs the private scan.
 - Repository hygiene (no destructive resets, stop processes by PID).
 - Use `set -o pipefail` (or no pipe) when a command's failure must stop a chain — `cmd | tail && next` runs `next` even if `cmd` failed.
-- Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID.
+- Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID. Put this rule into every prompt of an agent that starts servers or browsers while others run in parallel; agents otherwise reach for `pkill -f`.
 - Which documentation to update and link.
 - A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
@@ -47,6 +47,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 ## Quota guard
 - Estimate usage of the billing window by **cost-weighted usage**, not raw tokens (plans weight models differently); calibrate with the figure the user sees.
 - Below ~70 % continue; 70–85 % no new spawns and inform; ≥ 85 % park. Let the user set the threshold per billing window ("up to 80 %", "up to 95 %, then pause") and recalibrate whenever they report the real figure.
+- The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate errs high or low by ~10 %. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
 - Near the end of a window start only **small, parkable** tasks with "commit early and often; on park commit WIP immediately" — a park then leaves a green, resumable state.
 - A cheaper model may review a stronger model's work (still independent); a small fix round with reviewer-provided tests can be verified by the orchestrator with one spot mutation. Near a planned session end, **ask** before parking if quota allows continuing; local runs may continue detached if the user agrees.
 
