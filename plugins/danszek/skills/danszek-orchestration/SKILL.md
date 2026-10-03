@@ -13,6 +13,9 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 | Cross-cutting architecture consolidation | top reasoning model |
 | Experiments, pilots, cheap refinement | local model |
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
+- **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn.
+- **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
+- A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - Files are not always disjoint (shared layout, shell, store). Then **fix the merge order up front**: the second reviewer reviews in parallel but merges only after the first has landed, rebasing and re-running all gates and the browser check.
 - A rule an agent breaks **repeatedly to make a check pass** (e.g. borrowing a private config file the check needs) belongs in the tool, not the prompt: after the second violation, make the check find its inputs itself.
 - Refiners **never promote their own work** to ready: an independent reviewer approves the refinement (and any unsplit L ticket).
