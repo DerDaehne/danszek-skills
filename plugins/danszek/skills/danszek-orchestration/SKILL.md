@@ -17,6 +17,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
+- Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check.
 - A report that silently omits a check you explicitly asked for means the check was not done; ask or do it yourself before relying on it.
 - A criterion joined by "and" is several checks: tick it only when every clause has evidence, and say which clause is still open.
 - Files are not always disjoint (shared layout, shell, store). Then **fix the merge order up front**: the second reviewer reviews in parallel but merges only after the first has landed, rebasing and re-running all gates and the browser check.
