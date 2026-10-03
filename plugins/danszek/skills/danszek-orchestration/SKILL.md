@@ -13,6 +13,8 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 | Cross-cutting architecture consolidation | top reasoning model |
 | Experiments, pilots, cheap refinement | local model |
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
+- Files are not always disjoint (shared layout, shell, store). Then **fix the merge order up front**: the second reviewer reviews in parallel but merges only after the first has landed, rebasing and re-running all gates and the browser check.
+- A rule an agent breaks **repeatedly to make a check pass** (e.g. borrowing a private config file the check needs) belongs in the tool, not the prompt: after the second violation, make the check find its inputs itself.
 - Refiners **never promote their own work** to ready: an independent reviewer approves the refinement (and any unsplit L ticket).
 - When several planning agents work in the same area, tell each about tickets the others just created or split — otherwise they re-specify the same scope.
 - Keep author and reviewer **continuous**: resume the same agents for fix rounds and re-reviews; they keep context and re-reviews take minutes. Switch to a **fresh reviewer** once an agent's accumulated context gets very large — resuming then costs more than re-reading.
