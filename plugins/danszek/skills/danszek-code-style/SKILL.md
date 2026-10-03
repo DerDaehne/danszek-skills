@@ -20,6 +20,7 @@ description: Code style for agent-written code that humans must understand by re
 ## Tests
 - Test names are sentences describing behaviour.
 - A bug fix starts with a test that fails on main.
+- Existing tests are specification: changing an existing expectation needs an explicit reason in the commit message — never adapt a test just to make new behaviour pass.
 - **Every new test must fail against a mutant of the invariant it names** — run that mutant before reporting. (Classic trap: capturing the expected list before creating the data, so the assertion compares against an empty list and is always green.)
 - Clean up in `finally`, including inside helpers (child processes, servers, temp dirs, timers). Skip permission-based tests when running as a privileged user.
 
