@@ -36,3 +36,4 @@ description: Code style for agent-written code that humans must understand by re
 - Report test names, outputs and file lists exactly as they appear — never paraphrase from commit subjects.
 - New dependencies only with a justification; standard library → platform → package.
 - Public repositories carry no personal names, e-mail addresses, paths, hostnames, credentials, hardware details or internal planning references — including commit metadata.
+- Examples use documentation ranges and names (192.0.2.0/24, 2001:db8::/32, example.com) — never a realistic private address, which privacy scans rightly flag.

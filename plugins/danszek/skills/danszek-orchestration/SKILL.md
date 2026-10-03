@@ -17,6 +17,8 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
+- Fix-round prompts repeat the comment rule: code comments describe behaviour, never the finding id ("B1", "N2"), the review or the machine it was found on — agents tend to label their fixes after the finding.
+- Before swapping a live container, smoke-test the new image on a spare port with an empty data directory (start, health, one negative-config start); keep the previous image tag ready for rollback.
 - Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check.
 - A report that silently omits a check you explicitly asked for means the check was not done; ask or do it yourself before relying on it.
 - A criterion joined by "and" is several checks: tick it only when every clause has evidence, and say which clause is still open.
@@ -54,7 +56,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 ## Quota guard
 - Estimate usage of the billing window by **cost-weighted usage**, not raw tokens (plans weight models differently); calibrate with the figure the user sees.
 - Below ~70 % continue; 70–85 % no new spawns and inform; ≥ 85 % park. Let the user set the threshold per billing window ("up to 80 %", "up to 95 %, then pause") and recalibrate whenever they report the real figure.
-- The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate errs high or low by ~10 %. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
+- The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate can be off by a factor of two between a cheap-model and a frontier-model window; ask the user for the real figure more often when frontier models dominate. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
 - Near the end of a window start only **small, parkable** tasks with "commit early and often; on park commit WIP immediately" — a park then leaves a green, resumable state.
 - A cheaper model may review a stronger model's work (still independent); a small fix round with reviewer-provided tests can be verified by the orchestrator with one spot mutation. Near a planned session end, **ask** before parking if quota allows continuing; local runs may continue detached if the user agrees.
 
