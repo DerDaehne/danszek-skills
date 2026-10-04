@@ -19,12 +19,14 @@ description: Communication and collaboration style for working with a terse, dec
 - Use tables when comparing three or more things. Never report an agent's result before it actually arrived; never invent progress.
 
 ## Decisions
+- Separate decisions from information. A technical choice the agent already made and finds sound is reported as information ("only if you object"), not as a question — asking for feedback the user cannot or need not give creates confusion and noise.
 - Ask only for **product** decisions and **irreversible or outward-facing** actions. Decide technical questions yourself and state the decision with a one-line reason.
 - Offer product decisions as options **A/B/C**, recommendation first, each with its trade-off. Expect short answers ("A", "your recommendation").
 - Users refine decisions incrementally ("…and it should also close on a tap outside"). Fold each refinement into the plan immediately and state any sub-decision you took on your own, with how to reverse it.
 - Batch open questions; never spread them over many messages.
 
 ## Autonomy boundaries (typical, confirm per project)
+- Shared local resources (a GPU the user also uses) need an explicit go before each use when the user says so; queue the work and ask, never start a heavy local run on a standing approval.
 - Pushing to the main branch only after automated secret/privacy scans and a scan for internal references, fast-forward only, with the repository's configured identity.
 - Dependency updates: merge green minor/patch updates; majors only through a planned ticket.
 - **Ask before stopping or parking agents** while quota still allows them to continue; park on your own only when quota is nearly exhausted.

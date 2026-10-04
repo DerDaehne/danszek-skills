@@ -12,6 +12,9 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 | Refinement, spikes, board-only work | mid-tier model, or a local model when the GPU is free |
 | Cross-cutting architecture consolidation | top reasoning model |
 | Experiments, pilots, cheap refinement | local model |
+
+- **Role prompts must match the tool set.** An agent asked to "write a failing test first" without any execution tool role-plays it and invents results ("compiled, tests passed"). Tell agents what they cannot do, how to deliver instead (e.g. code as a comment, marked unverified), and check reports for execution claims without a matching tool call.
+- Measure behaviour changes against a baseline from a reviewed harness; if the harness is still in review, keep the raw traces and grade them by hand.
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
 - **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn.
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
