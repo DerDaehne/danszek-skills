@@ -14,6 +14,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 | Experiments, pilots, cheap refinement | local model |
 
 - **Role prompts must match the tool set.** An agent asked to "write a failing test first" without any execution tool role-plays it and invents results ("compiled, tests passed"). Tell agents what they cannot do, how to deliver instead (e.g. code as a comment, marked unverified), and check reports for execution claims without a matching tool call.
+- When you change what agents are told (roles, base prompt, templates), search every prompt part for wording that still contradicts the new rule, and guard it with a word-list test over all assembled prompts; a single leftover line ("include verification output") undoes the change.
 - Measure behaviour changes against a baseline from a reviewed harness; if the harness is still in review, keep the raw traces and grade them by hand.
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
 - **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn.
