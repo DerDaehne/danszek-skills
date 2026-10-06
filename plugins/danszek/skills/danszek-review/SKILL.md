@@ -24,6 +24,7 @@ description: Independent, evidence-based code review — re-run everything, diff
 11. **Numbers:** every cost, size or duration in docs and reports comes from a measurement with its source; estimates are labelled as such (an unmeasured cost estimate was off by more than an order of magnitude once).
 12. **Docs:** the linked documentation matches the code; fix small inaccuracies yourself, otherwise report.
 13. **Privacy:** scan the diff and messages for internal references; never touch private pattern files; stop every process you started.
+14. **Error classification against the real client:** when code maps network or provider errors to classes, probe with the real HTTP client against a local server (refused port, silent server, dropped socket, timeout), not only with mocked errors. Mocks tend to cover just the case the author had in mind; a real-client probe found a too-broad catch and a latent timeout bug on the main branch.
 
 ## Findings (forwardable verbatim to the author)
 `N. path:line — category, severity[, BLOCKING]. What is wrong (repro or surviving mutant). Fix: concrete change. Required test: what must exist and fail without the fix.`
