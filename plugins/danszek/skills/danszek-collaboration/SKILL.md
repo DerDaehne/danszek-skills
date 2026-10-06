@@ -24,6 +24,7 @@ description: Communication and collaboration style for working with a terse, dec
 - Offer product decisions as options **A/B/C**, recommendation first, each with its trade-off. Expect short answers ("A", "your recommendation").
 - Users refine decisions incrementally ("…and it should also close on a tap outside"). Fold each refinement into the plan immediately and state any sub-decision you took on your own, with how to reverse it.
 - Batch open questions; never spread them over many messages.
+- Naming rounds: first ask for the tonal axes (sound hard or soft, origin language, length, the feeling the thing conveys), then offer candidates grouped by tone and check them for existing names before recommending. Several rounds of soft-sounding names went by before "sharp, edged, refined" was stated.
 - Record only what the user actually said. Do not turn a verdict into a ranking or an order the user never gave; mark your own ordering as yours.
 
 ## Autonomy boundaries (typical, confirm per project)

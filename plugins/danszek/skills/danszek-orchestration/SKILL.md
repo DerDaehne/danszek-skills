@@ -24,6 +24,8 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running.
 - Fix-round prompts repeat the comment rule: code comments describe behaviour, never the finding id ("B1", "N2"), the review or the machine it was found on — agents tend to label their fixes after the finding.
 - Before swapping a live container, smoke-test the new image on a spare port with an empty data directory (start, health, one negative-config start); keep the previous image tag ready for rollback.
+- Adding a site to a shared reverse proxy: back up the config, append only, validate, reload gracefully (never restart), and check the existing sites before and after.
+- Agents mark knowledge notes as superseded only after reading them in full. If only part of a note is replaced, link it as a reference and state which parts no longer apply.
 - Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check.
 - A report that silently omits a check you explicitly asked for means the check was not done; ask or do it yourself before relying on it.
 - A criterion joined by "and" is several checks: tick it only when every clause has evidence, and say which clause is still open.
@@ -54,7 +56,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
 
 ## Gates before pushing
-1. Private-pattern scan over the outgoing diff, commit messages and file names.
+1. Private-pattern scan over the outgoing diff, commit messages and file names. On a **first push**, scan every commit's patch, not just the final tree: a reference removed in a later commit still sits in history. If the repository was never pushed, squash before publishing.
 2. Scan for internal references (comment ids, note links).
 3. Secret scanner over history and staged changes.
 4. Fast-forward push; watch CI and code scanning to green.
@@ -65,6 +67,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Below ~70 % continue; 70–85 % no new spawns and inform; ≥ 85 % park. Let the user set the threshold per billing window ("up to 80 %", "up to 95 %, then pause") and recalibrate whenever they report the real figure.
 - The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate can be off by a factor of two between a cheap-model and a frontier-model window; ask the user for the real figure more often when frontier models dominate. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
 - Some models weigh far more on a subscription quota than their API price suggests. Before running several agents of a new or premium model in parallel, start one, ask the user for the real quota figure after a short while, then decide on parallelism — three parallel premium agents emptied a whole window while the cost estimate showed under half.
+- Some models also have their own **weekly** quota with a fixed reset, separate from the session window. Ask the user for both figures and plan premium-model work against the weekly one.
 - A cost estimator may not price a new model correctly at all (one window showed 10 % while the user saw 33 %). For such models steer by the user's figure and elapsed time, not by the dollar estimate.
 - Near the end of a window start only **small, parkable** tasks with "commit early and often; on park commit WIP immediately" — a park then leaves a green, resumable state.
 - A cheaper model may review a stronger model's work (still independent); a small fix round with reviewer-provided tests can be verified by the orchestrator with one spot mutation. Near a planned session end, **ask** before parking if quota allows continuing; local runs may continue detached if the user agrees.
