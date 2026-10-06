@@ -21,6 +21,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
+- Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running.
 - Fix-round prompts repeat the comment rule: code comments describe behaviour, never the finding id ("B1", "N2"), the review or the machine it was found on — agents tend to label their fixes after the finding.
 - Before swapping a live container, smoke-test the new image on a spare port with an empty data directory (start, health, one negative-config start); keep the previous image tag ready for rollback.
 - Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check.
@@ -34,6 +35,8 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - Every developer prompt asks for a **mutation self-check of each new test before reporting**; fix rounds otherwise add new code with toothless tests and cost extra review rounds.
 - Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run.
 - Splits made by an approver that move already-reviewed scope verbatim inherit the approval; only genuinely new scope needs another independent approval — otherwise approvals chain endlessly.
+- **Design and prototype agents:** when they read earlier concepts as reference, require a distinct information architecture and an early interim screenshot of the start view. One concept mirrored a reference layout almost one to one; the interim check corrected it cheaply.
+- When a prototype is finished, start its preview server for the user yourself (agents stop their servers at the end), bind it to `127.0.0.1` and give that URL — `localhost` may resolve to IPv6 and look unreachable.
 
 ## Flow
 Ready (all blocking predecessors accepted) → developer agent: claim, short plan comment, own worktree and branch from current main, test first, tick tasks as they pass, work-log with real output → review → independent reviewer → findings back to the same author, or "review ok" + fast-forward merge → human acceptance stage. **Only the human closes tickets.**
@@ -62,6 +65,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Below ~70 % continue; 70–85 % no new spawns and inform; ≥ 85 % park. Let the user set the threshold per billing window ("up to 80 %", "up to 95 %, then pause") and recalibrate whenever they report the real figure.
 - The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate can be off by a factor of two between a cheap-model and a frontier-model window; ask the user for the real figure more often when frontier models dominate. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
 - Some models weigh far more on a subscription quota than their API price suggests. Before running several agents of a new or premium model in parallel, start one, ask the user for the real quota figure after a short while, then decide on parallelism — three parallel premium agents emptied a whole window while the cost estimate showed under half.
+- A cost estimator may not price a new model correctly at all (one window showed 10 % while the user saw 33 %). For such models steer by the user's figure and elapsed time, not by the dollar estimate.
 - Near the end of a window start only **small, parkable** tasks with "commit early and often; on park commit WIP immediately" — a park then leaves a green, resumable state.
 - A cheaper model may review a stronger model's work (still independent); a small fix round with reviewer-provided tests can be verified by the orchestrator with one spot mutation. Near a planned session end, **ask** before parking if quota allows continuing; local runs may continue detached if the user agrees.
 
