@@ -22,6 +22,8 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
 - Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running.
+- Keep supply-chain checks (dependency audit, licence scan) in their own CI job. A newly published advisory otherwise stops the job before the tests run and hides real failures behind it.
+- Flaky tests surface on slow runners, not on the developer machine: schedule a periodic stress run (shuffled order, repeated runs, throttled CPU) that reports without blocking the main branch, and fix flakiness in the code rather than with retries.
 - Fix-round prompts repeat the comment rule: code comments describe behaviour, never the finding id ("B1", "N2"), the review or the machine it was found on — agents tend to label their fixes after the finding.
 - Before swapping a live container, smoke-test the new image on a spare port with an empty data directory (start, health, one negative-config start); keep the previous image tag ready for rollback.
 - Adding a site to a shared reverse proxy: back up the config, append only, validate, reload gracefully (never restart), and check the existing sites before and after.

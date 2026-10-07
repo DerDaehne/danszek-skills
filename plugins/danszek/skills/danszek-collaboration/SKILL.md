@@ -29,6 +29,7 @@ description: Communication and collaboration style for working with a terse, dec
 
 ## Autonomy boundaries (typical, confirm per project)
 - Shared local resources (a GPU the user also uses) need an explicit go before each use when the user says so; queue the work and ask, never start a heavy local run on a standing approval.
+- Before asking the user to install or authenticate a tool, check whether the package manager can provide it and whether it is already signed in. A CLI missing from the PATH can still be available and authenticated.
 - Pushing to the main branch only after automated secret/privacy scans and a scan for internal references, fast-forward only, with the repository's configured identity.
 - Dependency updates: merge green minor/patch updates; majors only through a planned ticket.
 - **Ask before stopping or parking agents** while quota still allows them to continue; park on your own only when quota is nearly exhausted.
