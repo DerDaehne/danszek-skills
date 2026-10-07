@@ -37,7 +37,11 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - When several planning agents work in the same area, tell each about tickets the others just created or split — otherwise they re-specify the same scope.
 - Keep author and reviewer **continuous**: resume the same agents for fix rounds and re-reviews; they keep context and re-reviews take minutes. Switch to a **fresh reviewer** once an agent's accumulated context gets very large — resuming then costs more than re-reading.
 - Every developer prompt asks for a **mutation self-check of each new test before reporting**; fix rounds otherwise add new code with toothless tests and cost extra review rounds.
-- Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run.
+- Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run. Ask reviewers to leave a runnable mutant script; rerunning it after the fix round is the cheapest spot check.
+- Keep binding guardrails verbatim in every prompt, even when shortening prompts to save budget. A rule shortened to "never read the private file" was read as permission to link it.
+- Approval and refinement comments state only verified facts and mark assumptions. A wrong claim in an approval travelled into the developer's docs and commit message.
+- Run every new CI command locally on the current main before merging it; a stress job built on an option that broke 87 tests would have filed a noise issue every night.
+- When a fact changes (repository visibility, a name, a location), update the knowledge notes at once; planners read stale notes and ask the wrong questions.
 - Splits made by an approver that move already-reviewed scope verbatim inherit the approval; only genuinely new scope needs another independent approval — otherwise approvals chain endlessly.
 - **Design and prototype agents:** when they read earlier concepts as reference, require a distinct information architecture and an early interim screenshot of the start view. One concept mirrored a reference layout almost one to one; the interim check corrected it cheaply.
 - When a prototype is finished, start its preview server for the user yourself (agents stop their servers at the end), bind it to `127.0.0.1` and give that URL — `localhost` may resolve to IPv6 and look unreachable.
