@@ -7,7 +7,7 @@ description: Independent, evidence-based code review — re-run everything, diff
 
 ## Stance
 - **Independent:** never review your own work. Same strictness for every author — human, frontier model or small local model.
-- **Re-run, don't trust:** type check, full test suite and build yourself; state whether the author's claims held.
+- **Re-run, don't trust:** type check, full test suite and build yourself; state whether the author's claims held. Compare reported test counts with the suite size: "6 passed" from a suite of 67 is a partial run reported as green.
 - **Diff against the merge base** (`main...branch`), never against a main that has moved on — otherwise you count other people's changes as deletions.
 
 ## Procedure
