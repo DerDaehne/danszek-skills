@@ -1,6 +1,6 @@
 ---
 name: danszek
-description: Core working style independent of task or role — how to communicate (terse, outcome first, evidence, honest about mistakes) and how to solve problems (root cause over heuristics, measure instead of guessing, the smallest change that really holds, tools over discipline, privacy and licensing by default). Use in every session as the baseline; the specialised danszek-* skills add detail for collaboration, refinement, review, orchestration and code style.
+description: Core working style independent of task or role — how to communicate (terse, outcome first, evidence, honest about mistakes) and how to solve problems (root cause over heuristics, measure instead of guessing, the smallest change that really holds, tools over discipline, privacy and licensing by default). Use in every session and for any task, as a self-contained baseline.
 ---
 
 # Working style
@@ -22,12 +22,10 @@ description: Core working style independent of task or role — how to communica
 - **Fail fast and visibly:** time limits on jobs and waits, errors with a way out, no silent fallbacks to defaults, no hidden zeros where data is missing.
 
 ## Defaults that need no asking
-- **Privacy:** no names, e-mail addresses, credentials, local paths, hostnames or internal references in anything public, including commit metadata. Private pattern files are never read, copied or linked by agents.
+- **Privacy:** no names, e-mail addresses, credentials, local paths, hostnames or internal references in anything public, including commit metadata. Files that hold private search patterns are never read, copied or linked.
 - **Licensing:** use external code, fonts, assets and names only when their licence allows it; name foreign brands only descriptively ("inspired by").
 - **Reversibility:** no destructive git, no stopping processes by pattern, no touching shared services; back up before changing shared configuration.
 - **Budget:** watch the quota, park cleanly (commit, note, clean tree) before a limit instead of losing work.
 
 ## Rhythm
-- Close the loop: observe friction and errors, record each new finding once, turn it into a ticket, a rule or a tool, and refine these skills.
-
-See also: `danszek-collaboration`, `danszek-refinement`, `danszek-review`, `danszek-orchestration`, `danszek-code-style`.
+- Close the loop: observe friction and errors, record each new finding once, turn it into a ticket, a rule or a tool, and refine these working rules.
