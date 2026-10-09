@@ -1,12 +1,12 @@
 {
   "name": "danszek-skills",
-  "description": "Agent skills for orchestrating AI agents on a ticket board: collaboration, refinement, review, orchestration and code style.",
+  "description": "Agent skills for orchestrating AI agents on a ticket board: core working style, collaboration, refinement, review, orchestration and code style.",
   "owner": { "name": "danszek" },
   "plugins": [
     {
       "name": "danszek",
       "source": "./plugins/danszek",
-      "description": "Five skills distilled from agent-driven development practice: collaboration, refinement, review, orchestration, code style."
+      "description": "Six skills distilled from agent-driven development practice: core working style, collaboration, refinement, review, orchestration, code style."
     }
   ]
 }

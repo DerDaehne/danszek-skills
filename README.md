@@ -5,6 +5,7 @@ working style, communication style and review culture, kept generic and free of 
 
 | Skill | Use when |
 |---|---|
+| `danszek` | always, as the baseline: communication and solution style independent of task or role |
 | `danszek-collaboration` | working with a terse, decision-oriented maintainer: answer shape, decisions, autonomy limits, privacy, rhythm |
 | `danszek-refinement` | turning raw tickets into implementable ones; reviewing refinements |
 | `danszek-review` | independent review with own runs, browser measurements and mutation probes |

@@ -1,7 +1,7 @@
 {
   "name": "danszek",
-  "description": "Five skills distilled from agent-driven development practice: collaboration, refinement, review, orchestration, code style.",
-  "version": "0.1.0",
+  "description": "Six skills distilled from agent-driven development practice: core working style, collaboration, refinement, review, orchestration, code style.",
+  "version": "0.2.0",
   "author": {
     "name": "danszek"
   },
