@@ -17,7 +17,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - When you change what agents are told (roles, base prompt, templates), search every prompt part for wording that still contradicts the new rule, and guard it with a word-list test over all assembled prompts; a single leftover line ("include verification output") undoes the change.
 - Measure behaviour changes against a baseline from a reviewed harness; if the harness is still in review, keep the raw traces and grade them by hand.
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
-- **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn.
+- **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn. Also check how old the refinement is: a ticket refined days ago, while the files it names changed since, goes to a short re-check first instead of a developer.
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
@@ -61,7 +61,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Privacy rules; never read/copy/link private pattern files; the orchestrator runs the private scan.
 - Repository hygiene (no destructive resets, stop processes by PID).
 - Use `set -o pipefail` (or no pipe) when a command's failure must stop a chain — `cmd | tail && next` runs `next` even if `cmd` failed.
-- Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID. Put this rule into every prompt of an agent that starts servers or browsers while others run in parallel; agents otherwise reach for `pkill -f`.
+- Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID. Put this rule into every prompt of an agent that starts servers or browsers while others run in parallel; agents otherwise reach for `pkill -f`. Agents also stop the watchers and monitors they started (e.g. `tail -F`).
 - Which documentation to update and link.
 - A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
@@ -71,7 +71,8 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 2. Scan for internal references (comment ids, note links).
 3. Secret scanner over history and staged changes.
 4. Fast-forward push; watch CI and code scanning to green.
-- After merges, refresh dependencies in the main checkout before running local checks.
+- After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).
+- Compressed diff reviewers (read, grep, run tests; no board access) fit XS diffs: cheap and fast. Keep board updates, merges and anything that needs a browser or the board with a full reviewer or the orchestrator, and check their claims about CI like any other.
 
 ## Quota guard
 - Estimate usage of the billing window by **cost-weighted usage**, not raw tokens (plans weight models differently); calibrate with the figure the user sees.
