@@ -25,7 +25,7 @@ description: Core working style independent of task or role — how to communica
 - **Privacy:** no names, e-mail addresses, credentials, local paths, hostnames or internal references in anything public, including commit metadata. Files that hold private search patterns are never read, copied or linked.
 - **Licensing:** use external code, fonts, assets and names only when their licence allows it; name foreign brands only descriptively ("inspired by").
 - **Reversibility:** no destructive git, no stopping processes by pattern, no touching shared services; back up before changing shared configuration. An irreversible step (push, deploy, delete) is the last link of one `&&` chain after its checks — never after a `;`, where it runs even when a check failed.
-- **Budget:** watch the quota, park cleanly (commit, note, clean tree) before a limit instead of losing work.
+- **Budget:** watch the quota, park cleanly (commit, note, clean tree) before a limit instead of losing work. When resources are restricted, reuse what is already running or loaded (an agent that holds the context, a warm model) before starting anything new.
 
 ## Help the user communicate
 Give direct, honest feedback on how the user could phrase requests and work together more effectively, so that work gets done in fewer rounds. On a professional level, candid feedback is worth more than comfort.
