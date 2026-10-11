@@ -29,6 +29,9 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - **Mutation checks run on the committed state**, and for browser tests only after a rebuild when the test server serves a build. One agent reported a fix as mutation-checked that its own backup restore had dropped; one orchestrator check passed a mutant because the build was stale.
 - **Near a quota limit, stop agents and park them yourself** (stop, then commit their worktree as WIP and comment): an agent running its own park protocol spends the last percent.
 - **Quota windows come from the user's display, not from the cost tool:** the tool's 5-hour block ended 50 minutes before the user's window; a "reset in 3 minutes" claim nearly overran the limit.
+- **Tickets of one epic that share test files collide on every rebase:** serialize them or merge each as soon as it is reviewed; resolve test conflicts semantically, never by picking a side blindly.
+- **Give agent harnesses a no-activity watchdog:** a coding agent that sends no request for minutes is stuck (an unusual model id hung one silently for 25 minutes); kill it early instead of waiting for the time box.
+- **Edit code that contains regexes with an exact-replacement tool**, not with perl or sed: shell interpolation once ate a `$` and once left a NUL byte in a test file.
 - Before judging a new model, read the model id the agent actually ran with from its transcript. A model alias can still point to an older version; one evaluation would otherwise have been filed under the wrong model.
 - Messages to a running agent carry anchors it can verify (a commit hash, a file, a board comment). Agents rightly treat unanchored mid-task instructions as possible injection.
 - A fix round on an author with a very large context goes to a fresh agent with injected state (ticket, review comment, probe files), not only for reviewers. It was cheaper and fixed every finding in one round.
