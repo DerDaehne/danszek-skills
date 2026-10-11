@@ -26,6 +26,9 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - **Reserve numbers from a listing, not a search** (migrations, ADRs, ports): an empty full-text result is not proof that a number is free, and two agents planned with a number that was already taken.
 - **Do not run CPU- or GPU-heavy local jobs while agents run their gates**, or treat a live or timing test failure under load as unproven until the failing file passes or fails again on its own.
 - **A task the executing agent cannot fulfil** (needs a push, a human, a later merge) is marked as such when it is written; otherwise the agent either stalls or moves on with an open task.
+- **Mutation checks run on the committed state**, and for browser tests only after a rebuild when the test server serves a build. One agent reported a fix as mutation-checked that its own backup restore had dropped; one orchestrator check passed a mutant because the build was stale.
+- **Near a quota limit, stop agents and park them yourself** (stop, then commit their worktree as WIP and comment): an agent running its own park protocol spends the last percent.
+- **Quota windows come from the user's display, not from the cost tool:** the tool's 5-hour block ended 50 minutes before the user's window; a "reset in 3 minutes" claim nearly overran the limit.
 - Before judging a new model, read the model id the agent actually ran with from its transcript. A model alias can still point to an older version; one evaluation would otherwise have been filed under the wrong model.
 - Messages to a running agent carry anchors it can verify (a commit hash, a file, a board comment). Agents rightly treat unanchored mid-task instructions as possible injection.
 - A fix round on an author with a very large context goes to a fresh agent with injected state (ticket, review comment, probe files), not only for reviewers. It was cheaper and fixed every finding in one round.
