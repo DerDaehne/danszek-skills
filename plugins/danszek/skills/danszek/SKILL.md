@@ -17,7 +17,7 @@ description: Core working style independent of task or role — how to communica
 - **Root cause over symptom.** When a fix starts to grow timing tricks, polling or retries, stop and look for the mechanism underneath. Framework and browser behaviour are frequent culprits.
 - **Measure, don't guess.** Positions, durations, counts, query plans, test totals. Compare reported numbers with expected ones (a run of 6 tests from a suite of 67 is not "green").
 - **Smallest change that really holds:** reuse what exists, prefer the standard library and platform features, add no dependency or abstraction without a present need. Mark a deliberate shortcut with its limit and upgrade path.
-- **Prove it:** every new test must fail when the invariant it names is broken (mutation probe). A test that cannot fail proves nothing.
+- **Prove it:** every new test must fail when the invariant it names is broken (mutation probe). A test that cannot fail proves nothing. The same holds for a quick check before a claim: pick an input on which the wrong behaviour would look different (a limit of 2 checked on a list of exactly 2 items proves nothing).
 - **Tools over discipline.** A rule broken twice moves into a check, a linter or a script instead of another reminder.
 - **Fail fast and visibly:** time limits on jobs and waits, errors with a way out, no silent fallbacks to defaults, no hidden zeros where data is missing.
 

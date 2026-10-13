@@ -56,6 +56,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - Keep binding guardrails verbatim in every prompt, even when shortening prompts to save budget. A rule shortened to "never read the private file" was read as permission to link it.
 - Approval and refinement comments state only verified facts and mark assumptions. A wrong claim in an approval travelled into the developer's docs and commit message.
 - Run every new CI command locally on the current main before merging it; a stress job built on an option that broke 87 tests would have filed a noise issue every night.
+- When CI fails but every local run is green, read the CI artifacts first (page snapshot, trace, server log) for concrete IDs and state before more local reproduction attempts: an ID of 1 in a long suite once exposed database ID reuse that no local timing reproduced.
 - When a fact changes (repository visibility, a name, a location), update the knowledge notes at once; planners read stale notes and ask the wrong questions.
 - Splits made by an approver that move already-reviewed scope verbatim inherit the approval; only genuinely new scope needs another independent approval — otherwise approvals chain endlessly.
 - **Design and prototype agents:** when they read earlier concepts as reference, require a distinct information architecture and an early interim screenshot of the start view. One concept mirrored a reference layout almost one to one; the interim check corrected it cheaply.
