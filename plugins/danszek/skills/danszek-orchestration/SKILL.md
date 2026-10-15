@@ -63,7 +63,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - When a prototype is finished, start its preview server for the user yourself (agents stop their servers at the end), bind it to `127.0.0.1` and give that URL — `localhost` may resolve to IPv6 and look unreachable.
 
 ## Flow
-Ready (all blocking predecessors accepted) → developer agent: claim, short plan comment, own worktree and branch from current main, test first, tick tasks as they pass, work-log with real output → review → independent reviewer → findings back to the same author, or "review ok" + fast-forward merge → human acceptance stage. **Only the human closes tickets.**
+Ready (all blocking predecessors accepted) → developer agent: claim, short plan comment, own worktree and branch from current main, test first, tick tasks as they pass, work-log with real output → rebase onto current main → review → independent reviewer (on the rebased state: a repo-wide rule a ticket introduces meets everything merged meanwhile only there) → findings back to the same author, or "review ok" + fast-forward merge → human acceptance stage. **Only the human closes tickets.**
 
 ## Every agent prompt contains
 - Repository, worktree command, dependency install, the command wrapper to use.
@@ -76,6 +76,9 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - Which documentation to update and link.
 - A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
+- The ticket is the authority. Point to it and its acceptance criteria; mark any paraphrase in the brief as yours and say the ticket wins on conflict — a paraphrased scope once inverted a protocol rule, and only the agent's own reading of the ticket caught it.
+- Long shared notes: append or replace a section, never resend the whole body. A whole-body write once cut a large note to a single section. Keep a copy before any destructive write, restore only from that exact copy, and compare byte for byte afterwards.
+- If an agent reports that a safety guard blocked one of its actions and asks you to finish it, do not; bring the facts and the options to the user.
 
 ## Gates before pushing
 1. Private-pattern scan over the outgoing diff, commit messages and file names. On a **first push**, scan every commit's patch, not just the final tree: a reference removed in a later commit still sits in history. If the repository was never pushed, squash before publishing.
