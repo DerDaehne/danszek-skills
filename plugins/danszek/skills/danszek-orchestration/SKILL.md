@@ -18,6 +18,7 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 - Measure behaviour changes against a baseline from a reviewed harness; if the harness is still in review, keep the raw traces and grade them by hand.
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
 - **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn. Also check how old the refinement is: a ticket refined days ago, while the files it names changed since, goes to a short re-check first instead of a developer.
+- Code with an external attack surface (network listeners, authentication, parsing untrusted input) belongs to the strongest model **as developer**, not only as reviewer: a mid-tier developer once shipped a listener that one unauthenticated request could crash, and only the review caught it, at the cost of two extra rounds.
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
@@ -85,6 +86,8 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 2. Scan for internal references (comment ids, note links).
 3. Secret scanner over history and staged changes.
 4. Fast-forward push; watch CI and code scanning to green.
+- **Prove each gate sees what it guards:** plant a violation once on the exact path the gate runs. A privacy scan that checked "unpushed commits" ran in a checkout where HEAD equalled the remote, saw zero commits and reported clean; a gate should report how much it saw, and "saw nothing" is a failure.
+- Scope secret scans to the outgoing commits when worktrees share refs (a sibling's unpushed test nonce blocked an unrelated merge), and let CI scan the full pushed history. Narrowing a security gate is the user's decision: ask with the trade-off, never just do it. Generate secret-shaped test data at runtime instead of committing literals.
 - After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).
 - Compressed diff reviewers (read, grep, run tests; no board access) fit XS diffs: cheap and fast. Keep board updates, merges and anything that needs a browser or the board with a full reviewer or the orchestrator, and check their claims about CI like any other.
 
