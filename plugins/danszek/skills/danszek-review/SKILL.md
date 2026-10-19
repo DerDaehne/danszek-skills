@@ -31,6 +31,8 @@ description: Independent, evidence-based code review — re-run everything, diff
 18. **Reach test states the way production reaches them.** A test that builds its precondition through an internal call no production path makes (a follow-up run created directly instead of through the human's resume or restart) proves a case that never occurs and misses the ones that do; a lost-answer bug hid behind exactly such a test. A mutant the author declares "equivalent" needs a proof or a probe: one such claim hid a real effect on a later question.
 19. **Workarounds and "safeguards":** a workaround whose comment says the cause is unknown is not accepted as is. Reproduce without it and find the mechanism; a hidden framework bug behind one such workaround also explained an older one and a focus regression it caused. Code kept "as a safeguard" that no test needs (removing it leaves every test green) is removed or gets a test that fails without it.
 
+20. **A defect found in a library you use: look for the same class in your own code.** A review of a design system's toast found that its countdown counted timer steps instead of the clock, so undo was offered after the server's deadline; the product's own toast, built on the same idea, had exactly that bug on its main branch.
+
 ## Findings (forwardable verbatim to the author)
 `N. path:line — category, severity[, BLOCKING]. What is wrong (repro or surviving mutant). Fix: concrete change. Required test: what must exist and fail without the fix.`
 - Categories: correctness, test quality, code style, lean, docs, privacy, UX.
