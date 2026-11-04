@@ -33,6 +33,8 @@ description: Independent, evidence-based code review — re-run everything, diff
 
 20. **A defect found in a library you use: look for the same class in your own code.** A review of a design system's toast found that its countdown counted timer steps instead of the clock, so undo was offered after the server's deadline; the product's own toast, built on the same idea, had exactly that bug on its main branch.
 
+21. **Siblings of the changed mechanism:** when the fix adds a per-surface mechanism (an overlay layer, a key router, a press handler per window), list every surface of the same kind and check each one, or file the missing ones as tickets in this round. A panel that got its own tooltip layer had a calendar popup beside it with the same gap, found only one review later.
+
 ## Findings (forwardable verbatim to the author)
 `N. path:line — category, severity[, BLOCKING]. What is wrong (repro or surviving mutant). Fix: concrete change. Required test: what must exist and fail without the fix.`
 - Categories: correctness, test quality, code style, lean, docs, privacy, UX.
