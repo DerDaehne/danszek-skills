@@ -102,6 +102,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 2. Scan for internal references (comment ids, note links).
 3. Secret scanner over history and staged changes.
 4. Fast-forward push; watch CI and code scanning to green.
+- In Claude Code, put these gates into `scripts/pre-push-gate`: the plugin's push guard runs it before every push the agent starts and blocks the push when it fails (plugin README, "Push guard hook").
 - **Prove each gate sees what it guards:** plant a violation once on the exact path the gate runs. A privacy scan that checked "unpushed commits" ran in a checkout where HEAD equalled the remote, saw zero commits and reported clean; a gate should report how much it saw, and "saw nothing" is a failure.
 - Scope secret scans to the outgoing commits when worktrees share refs (a sibling's unpushed test nonce blocked an unrelated merge), and let CI scan the full pushed history. Narrowing a security gate is the user's decision: ask with the trade-off, never just do it. Generate secret-shaped test data at runtime instead of committing literals.
 - After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).

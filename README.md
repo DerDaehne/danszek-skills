@@ -27,12 +27,29 @@ It also brings the command **`/danszek:retro`** (Claude Code only): it runs the 
 retro log, deduplicate, file tool feedback with the tool's owner, fold generic lessons into the skills, report.
 An optional argument narrows the scope (`/danszek:retro since the last release`).
 
+### Push guard hook (Claude Code only, opt-in per project)
+
+The plugin registers a `PreToolUse` hook on Bash, `plugins/danszek/hooks/push-guard.sh`. Before a Bash command
+that contains a `git push` (also `git -C <dir> push`, and inside `&&`, `;` or `|` chains) it runs the project's
+gate and blocks the push when the gate exits non-zero; the gate's output becomes the reason Claude sees.
+
+- **Opt in:** put an executable `scripts/pre-push-gate` into the project (relative to the directory Claude Code
+  was started in), e.g. your secret and privacy scans. It runs in the project directory with no arguments.
+  `DANSZEK_PUSH_GATE=/path/to/gate` in the environment Claude Code starts in points to another file.
+- **Without a gate** the hook exits at once and changes nothing. It only reads its input and runs the gate:
+  no network, no writes, no jq (plain bash). `push-guard.sh --help` prints the rules.
+- It guards pushes Claude starts through its Bash tool, not pushes you run yourself; a real `pre-push` git hook
+  covers those. A push to another repository (`git -C other push`) still runs this project's gate.
+- **Disable:** remove or `chmod -x` the gate, or turn the plugin off (`claude plugin disable danszek@danszek-skills`),
+  or set `"disableAllHooks": true` in your settings, which turns off every hook.
+
 ```
 .claude-plugin/marketplace.json          Claude Code marketplace (this repository)
 plugins/danszek/.claude-plugin/plugin.json
 plugins/danszek/skills/<skill>/SKILL.md  the skills (single source of truth; references/, assets/, scripts/ beside it)
 plugins/danszek/agents/reviewer.md       the reviewer subagent (Claude Code only)
 plugins/danszek/commands/retro.md        the /danszek:retro command (Claude Code only)
+plugins/danszek/hooks/                   the opt-in push guard hook (Claude Code only)
 plugins/danszek/evals/                   trigger evals for `claude plugin eval`
 scripts/build-zips.sh                    dist/<skill>.zip for upload UIs
 scripts/install.sh                       symlinks for local CLIs

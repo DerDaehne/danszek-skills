@@ -1,0 +1,17 @@
+{
+  "description": "Opt-in push guard: runs the project's scripts/pre-push-gate before a git push and blocks the push when it fails",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/push-guard.sh",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}
