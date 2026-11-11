@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decisions</title>
+<!-- The design system, inlined byte-identical by scripts/inline.py: tokens first, then components. -->
+<style>/*@inline:tokens@*/</style>
+<style>/*@inline:components@*/</style>
+<style>
+  /* Page chrome only. Options are drawn with the design system's own classes and tokens. */
+  .dp-page { max-width: 72rem; margin: 0 auto; padding: 1rem; }
+  .dp-decision { margin: 2rem 0; padding-top: 1rem; border-top: 1px solid currentColor; }
+  .dp-state::before { content: "open"; }
+  .dp-decision[data-answered] .dp-state::before { content: "answered"; }
+  .dp-options { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .dp-option { flex: 1 1 18rem; }
+  .dp-recommended::before { content: "Recommended"; font-weight: bold; }
+  .dp-pick textarea { width: 100%; min-height: 3rem; }
+</style>
+</head>
+<body>
+<main class="dp-page">
+  <h1>Decisions: <!-- topic --></h1>
+  <p>One section per decision. Pick one option each; a note is optional. <button type="button" id="dp-export">Copy picks as JSON</button></p>
+
+  <!-- Copy one section per decision. The id is stable: a changed question gets a new id, never a reused one. -->
+  <section class="dp-decision" data-decision-id="example-panel-width">
+    <h2>Panel width <small class="dp-state"></small></h2>
+    <p><strong>Context:</strong> what is decided and why now, with checked citations (file:line, ticket).</p>
+    <p><strong>What the design system says:</strong> the quoted rule, or a plain statement that it is silent.</p>
+    <div class="dp-options">
+      <!-- Recommendation first and marked. Show the states that matter: light/dark, narrow, focus, empty and full. -->
+      <figure class="dp-option dp-recommended" data-option="a">
+        <figcaption>A — one-line reason</figcaption>
+        <!-- the design system's real components, only the variant under decision differs -->
+      </figure>
+      <figure class="dp-option" data-option="b">
+        <figcaption>B — trade-off</figcaption>
+      </figure>
+    </div>
+    <!-- Motion: wrap the moving part in [data-motion] and drive it with CSS transitions or animations on .dp-play. -->
+    <div data-motion>
+      <button type="button" data-play>Play</button>
+      <label><input type="checkbox" data-slow> Slow motion (¼ speed)</label>
+      <div class="dp-stage"><!-- animated component --></div>
+    </div>
+    <!-- Gesture: CSS reads var(--progress), 0 to 1, from this container. -->
+    <div data-gesture style="--progress: 0">
+      <label>Gesture progress <input type="range" min="0" max="1" step="0.01" value="0" data-scrub></label>
+      <div class="dp-stage"><!-- component positioned with calc(var(--progress) * …) --></div>
+    </div>
+    <fieldset class="dp-pick">
+      <legend>Your pick</legend>
+      <label><input type="radio" name="example-panel-width" value="a"> A</label>
+      <label><input type="radio" name="example-panel-width" value="b"> B</label>
+      <textarea data-note placeholder="Note (optional)"></textarea>
+    </fieldset>
+  </section>
+</main>
+<script>
+"use strict";
+// Replace load/save with the hosting environment's shared store; the rest of the page stays as is.
+const store = {
+  key: "decision-picks",
+  async load() {
+    try { return JSON.parse(localStorage.getItem(this.key) || "{}"); } catch { return {}; }
+  },
+  async save(picks) {
+    try { localStorage.setItem(this.key, JSON.stringify(picks)); } catch { /* storage blocked: picks stay on screen, export still works */ }
+  },
+};
+
+const sections = [...document.querySelectorAll("[data-decision-id]")];
+let picks = {};
+
+function readPick(section) {
+  const chosen = section.querySelector('input[type="radio"]:checked');
+  const note = section.querySelector("[data-note]").value.trim();
+  return chosen ? { choice: chosen.value, note, at: new Date().toISOString() } : null;
+}
+
+function showPick(section, pick) {
+  const radio = pick && section.querySelector(`input[type="radio"][value="${CSS.escape(pick.choice)}"]`);
+  if (radio) radio.checked = true;
+  if (pick) section.querySelector("[data-note]").value = pick.note || "";
+  section.toggleAttribute("data-answered", Boolean(radio));
+}
+
+function pagePicks() {
+  // Only ids this page defines: a shared store also holds stale and foreign entries.
+  return Object.fromEntries(sections.map((s) => [s.dataset.decisionId, picks[s.dataset.decisionId]]).filter(([, p]) => p));
+}
+
+for (const section of sections) {
+  section.addEventListener("change", async () => {
+    const pick = readPick(section);
+    if (!pick) return;
+    picks[section.dataset.decisionId] = pick;
+    showPick(section, pick);
+    await store.save(picks);
+  });
+}
+
+for (const motion of document.querySelectorAll("[data-motion]")) {
+  motion.querySelector("[data-play]").addEventListener("click", () => {
+    motion.classList.remove("dp-play");
+    void motion.offsetWidth; // restart: a removed and re-added class only replays after a style flush
+    motion.classList.add("dp-play");
+    const rate = motion.querySelector("[data-slow]").checked ? 0.25 : 1;
+    for (const animation of motion.getAnimations({ subtree: true })) animation.playbackRate = rate;
+  });
+}
+
+for (const gesture of document.querySelectorAll("[data-gesture]")) {
+  const scrub = gesture.querySelector("[data-scrub]");
+  scrub.addEventListener("input", () => gesture.style.setProperty("--progress", scrub.value));
+}
+
+document.getElementById("dp-export").addEventListener("click", async () => {
+  const json = JSON.stringify(pagePicks(), null, 2);
+  try { await navigator.clipboard.writeText(json); } catch { prompt("Copy the picks:", json); }
+});
+
+store.load().then((stored) => {
+  picks = stored;
+  for (const section of sections) showPick(section, picks[section.dataset.decisionId]);
+});
+</script>
+</body>
+</html>

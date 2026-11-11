@@ -32,14 +32,19 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
 - Changing an option after the page was published gets a new id; never reuse an id for a different question.
 
 ## Building it
-- Reuse the previous decision page's template and verification script instead of starting fresh.
-- Check which interpreters the build environment really has before writing the generator.
-- Substitute file contents literally: some replace functions interpret `$&` and similar sequences in the replacement text (in JavaScript, `split(placeholder).join(content)` is literal, `String.replace` is not), which silently corrupts an inlined stylesheet — the byte-identity check catches it.
+- Start from the previous decision page of the project, or from [assets/decision-page.html](assets/decision-page.html) for the first one: one section per decision with its stable id, play and slow motion for `[data-motion]`, a progress slider for `[data-gesture]`, picks with note and open/answered state, an export of the page's own picks, and a `store` with `load`/`save` to point at the host's shared store (it falls back to browser storage).
+- Inline and verify with the bundled script (Python 3, standard library only; paths relative to this skill's directory):
+  ```sh
+  python3 scripts/inline.py build page-template.html page.html tokens=path/to/tokens.css components=path/to/components.css
+  python3 scripts/inline.py verify page.html path/to/tokens.css path/to/components.css
+  ```
+  `page-template.html` is your copy of the template with the sections filled in. `build` replaces each `/*@inline:NAME@*/` placeholder literally and then runs `verify`; `verify` exits non-zero and names the first missing line when the page no longer holds a source file byte for byte. Re-run `verify` after every later edit of the page.
+- Where no Python is available, check which interpreters the build environment really has before writing a generator, and substitute file contents literally: some replace functions interpret `$&` and similar sequences in the replacement text (in JavaScript, `split(placeholder).join(content)` is literal, `String.replace` is not), which silently corrupts an inlined stylesheet — the byte-identity check catches it.
 - Animation APIs may not resolve CSS custom properties (Web Animations' `easing` does not take `var()`); read the computed value and pass the literal.
 - Headless browsers can enforce a minimum window width; read the real viewport width before trusting a "phone width" check.
 
 ## Before publishing (the orchestrator, not only the page agent)
-1. Run the byte-identity check yourself.
+1. Run the byte-identity check yourself (`scripts/inline.py verify`).
 2. Read the whole page: everything except the inlined design system is the agent's own drawing and can be wrong.
 3. Render it (light, dark, narrow) and look at every section; play every motion.
 4. Check every citation and every quoted rule against its source.
