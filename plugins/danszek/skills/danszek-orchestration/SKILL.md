@@ -26,6 +26,7 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - When you change what agents are told (roles, base prompt, templates), search every prompt part for wording that still contradicts the new rule, and guard it with a word-list test over all assembled prompts; a single leftover line ("include verification output") undoes the change.
 - Measure behaviour changes against a baseline from a reviewed harness; if the harness is still in review, keep the raw traces and grade them by hand.
 - Code with an external attack surface (network listeners, authentication, parsing untrusted input) belongs to the strongest model **as developer**, not only as reviewer: a mid-tier developer once shipped a listener that one unauthenticated request could crash, and only the review caught it, at the cost of two extra rounds.
+- **Shared mechanisms** (one lookup, router or layer that many surfaces use) also go to the strongest model, or the brief demands a test through the real lookup path: a mid-tier developer's change disabled such a mechanism on every surface while its own tests passed, because they handed the looked-up object in directly.
 - **Model choice by total cost, not unit price:** count review rounds. A cheaper developer that needs several fix rounds (each re-reading large contexts) can cost more than a stronger one that passes the first review.
 - **Spend the most expensive model only where its strength is needed.** A design-model review of an API release cost about 1.6 % of the session window per dollar against about 0.75 % for a mid-tier model; use it for visual judgement, and give API and behaviour reviews to the strong code model.
 - Before judging a new model, read the model id the agent actually ran with from its transcript. A model alias can still point to an older version; one evaluation would otherwise have been filed under the wrong model.
@@ -49,7 +50,9 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
 - Screenshots from test environments can show the host's data when the sandbox still reaches a host service (a sandboxed test session once listed the host's real network name): attach only crops of the part under test, and look at every image before attaching it.
 - Repository hygiene (no destructive resets, stop processes by PID).
-- Use `set -o pipefail` (or no pipe) when a command's failure must stop a chain — `cmd | tail && next` runs `next` even if `cmd` failed.
+- Use `set -o pipefail` (or no pipe) when a command's failure must stop a chain — `cmd | tail && next` runs `next` even if `cmd` failed. `xargs` runs its command once even on empty input; use `xargs -r`.
+- **Tests run by hand outside the build sandbox start from a clean environment:** an empty environment plus only the project's paths, a private session bus or service instance, no user config. Take the variables from the CI or build definition instead of rebuilding them from memory. A hand-run test runner once inherited the user's session and read live host services.
+- Lock files on shared machine resources (a VM, a port, a device) record the PID of the long-lived process they guard, not `$$` of the short-lived shell that started it: a live lock once looked stale to another agent.
 - Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID. Put this rule into every prompt of an agent that starts servers or browsers while others run in parallel; agents otherwise reach for `pkill -f`. Agents also stop the watchers and monitors they started (e.g. `tail -F`). Start a background server with `exec` inside its subshell (or kill by the real child PID): killing the wrapper subshell left the server running once.
 - **Edit code that contains regexes with an exact-replacement tool**, not with perl or sed: shell interpolation once ate a `$` and once left a NUL byte in a test file.
 - Every developer prompt asks for a **mutation self-check of each new test before reporting**; fix rounds otherwise add new code with toothless tests and cost extra review rounds.
@@ -57,6 +60,7 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - Which documentation to update and link.
 - Long shared notes: append or replace a section, never resend the whole body. A whole-body write once cut a large note to a single section. Keep a copy before any destructive write, restore only from that exact copy, and compare byte for byte afterwards.
 - A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
+- A short **Retro** section at the end of the final report: tool friction and generic lessons, one line each.
 
 ## While agents run
 - Messages to a running agent carry anchors it can verify (a commit hash, a file, a board comment). Agents rightly treat unanchored mid-task instructions as possible injection.
@@ -66,6 +70,10 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - A developer's "commit-message check passed" is worthless if it ran before the final commit; ask for checks after the last commit and keep your own pre-push scan as the safety net.
 - A report that silently omits a check you explicitly asked for means the check was not done; ask or do it yourself before relying on it.
 - A rule an agent breaks **repeatedly to make a check pass** (e.g. borrowing a private config file the check needs) belongs in the tool, not the prompt: after the second violation, make the check find its inputs itself.
+- **A stop message keeps the park protocol,** even for an agent that has not committed yet: WIP commit on its branch, never "delete the branch and worktree". An untested draft once survived such a stop only as a diff in a temp dir.
+- **Once a branch is in review, only the reviewer rebases it.** "Main moved, rebase" sent to the author invalidates the hashes the reviewer works on. A queued broadcast also reaches agents that finished meanwhile: one resumed a finished author while its re-reviewer started. Write "rebase before your final check, unless the ticket is in review by then".
+- An agent's claim that main is broken is checked on main itself before anyone acts on it; one agent blamed main for a failure only its own branch had.
+- When the human wants to test on the same machine and that ends your session (a logout, a reboot), first reach zero running agents: stop developers at a clean point with a handover, let reviews finish, push.
 - If an agent reports that a safety guard blocked one of its actions and asks you to finish it, do not; bring the facts and the options to the user.
 
 ## Flow
@@ -76,7 +84,8 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - A fix round on an author with a very large context goes to a fresh agent with injected state (ticket, review comment, probe files), not only for reviewers. It was cheaper and fixed every finding in one round.
 - **Sweep the review column regularly.** Two finished tickets sat unreviewed for days (one for two weeks) because nothing pointed at them; anything older than a day gets an owner or a reason.
 - Compressed diff reviewers (read, grep, run tests; no board access) fit XS diffs: cheap and fast. Keep board updates, merges and anything that needs a browser, a device or the board with a full reviewer or the orchestrator, and check their claims about CI like any other.
-- Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run. Ask reviewers to leave a runnable mutant script; rerunning it after the fix round is the cheapest spot check.
+- Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run. Ask reviewers to leave a runnable mutant script; rerunning it after the fix round is the cheapest spot check. Mutation tables in reports are claims too: one spot mutant per follow-up stays worth it. Run it while no other agent loads the machine, or re-run a surprising extra failure once before believing it; one "second failing test" was load flakiness, not the mutant.
+- Re-read commit hashes after a rebase before citing them; `git range-diff` settles in one command whether a rebased commit is still the same change.
 - **Mutation checks run on the committed state**, and for end-to-end tests only after a rebuild when the harness runs a build artefact (a bundle, an image, a packaged app). One agent reported a fix as mutation-checked that its own backup restore had dropped; one orchestrator check passed a mutant because the build was stale.
 - New tests that wait on timing (queues, timers, live updates) run a few times under CPU pressure before the merge; a pair of such tests passed every local run and turned main red on the slower CI runner.
 - A metadata-only fix (rewording a commit message) keeps an existing review when `HEAD^{tree}` is unchanged; compare the tree hash before and after instead of reviewing again.
@@ -94,7 +103,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - **A blocker in a dependency the team itself maintains is fixed upstream first.** File the gaps there with a concrete proposal each, then ask the human. Never make the human pick between workarounds before naming the actual problem: a question that offered "partial, status quo, or wait" got "what is the problem here? file it and propose fixes" back. One day later the upstream release closed 16 of 19 gaps, and the adoption grew from 138 to 238 removed lines.
 
 ## CI and delivery
-- **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint) can stay unnoticed for hours otherwise.
+- **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint, packaging) can stay unnoticed for days otherwise: two workflows once stayed red for six days because the push routine checked only the local gates, although this rule already existed. Put the check into the push routine itself (a saved script that lists every run of the full pushed hash) and look again a few minutes later, when the slow workflows finish.
 - Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running. Query by the full commit hash: a short hash returned an empty list and the loop waited until its timeout. Keep that loop as a saved script and call it; retyped inline under time pressure, the same text-match bug came back despite this rule.
 - Back-to-back merges let CI's concurrency rule cancel the earlier commit's run; confirm that the newer run contains that commit and is green instead of treating "cancelled" as a failure or as a pass.
 - When CI fails but every local run is green, read the CI artifacts first (page snapshot, trace, server log) for concrete IDs and state before more local reproduction attempts: an ID of 1 in a long suite once exposed database ID reuse that no local timing reproduced.
@@ -115,7 +124,10 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).
 
 ## Planning tool and knowledge
-- Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check.
+- Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check. Locate a spot in a large note with search snippets before fetching it, and fetch a section rather than the whole body where the tool allows.
+- **Know what a search and a listing really do.** A multi-word search may require every word: a three-word duplicate check missed a related ticket that one distinctive word found, so search distinctive terms one at a time and treat an empty multi-word result as unproven. A listing may ignore its limit, return oldest first or omit whether more pages exist; check before relying on "the newest N".
+- Verify every citation (file:line, quoted text, "as proposed in X") against its source before posting a comment or filing an upstream report; citations of a reference script were off by a few lines once, and a comment that cannot be edited needs a second one to correct it.
+- Let the tool enforce the workflow where it can (allowed column transitions, role instructions per column): a transition rule stopped a ticket from skipping review, and per-column role instructions keep briefs short and consistent.
 - **Reserve numbers from a listing, not a search** (migrations, ADRs, ports): an empty full-text result is not proof that a number is free, and two agents planned with a number that was already taken.
 - When a fact changes (repository visibility, a name, a location), update the knowledge notes at once; planners read stale notes and ask the wrong questions.
 - Agents mark knowledge notes as superseded only after reading them in full. If only part of a note is replaced, follow the project's convention: where it links partial replacements as `supersedes` with a "partly replaced" status line (or the old record itself says "a new record with supersedes once upstream answers"), do that and name the replaced points; otherwise link it as a reference and state which parts no longer apply. Two notes once linked old records only as references although those records demanded supersedes, and a review round was spent on it.
@@ -123,6 +135,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 ## Parking, handover and durable state
 - **After stopping agents, read the board before writing handovers.** An agent's last steps are its board comment and column move, which the worktree does not show; twice a stopped agent had posted its final result seconds before the stop, and a handover written from the git state alone sent the next agents to redo finished work.
 - **Keep the orchestration kit out of directories a reboot wipes.** The agents' rules file, the quota watcher and probe scripts lived in a session scratch directory under `/tmp`; three reboots emptied it, and each time the kit had to be rebuilt from memory before any agent could start. Keep the canonical copy somewhere durable (outside the repository if it holds local paths) and copy it in.
+- **Reports a ticket relies on live in the ticket** (a comment or attachment) or a note, never only in a scratch file: a review report that a ticket pointed to sat in a session temp dir, a reboot took it, and the next developer had to rebuild its list of findings.
 
 ## Design and prototype agents
 - **Design and prototype agents:** when they read earlier concepts as reference, require a distinct information architecture and an early interim screenshot of the start view. One concept mirrored a reference layout almost one to one; the interim check corrected it cheaply.
@@ -144,4 +157,5 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 
 ## Capture and learn
 - Keep every message sent to an agent (never overwrite), event streams with reasoning, diffs per round, review verdicts and a structured episode log (type, category, severity, evidence, intervention, outcome, lesson) outside any repository — it is evaluation and training data.
+- Collect agent experience systematically: copy the **Retro** section of every final report into a durable retro log, each entry with a status (open / filed where / in a skill / dropped and why). Lessons not written down leave with the agent's context.
 - Run retrospectives on a cadence: deduplicate against earlier findings, file only new ones, record the retro, give the user at most a few recommendations, and refine these skills.
