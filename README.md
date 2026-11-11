@@ -9,6 +9,7 @@ working style, communication style and review culture, kept generic and free of 
 | `danszek-collaboration` | working with a terse, decision-oriented maintainer: answer shape, decisions, autonomy limits, privacy, rhythm |
 | `danszek-refinement` | turning raw tickets into implementable ones; reviewing refinements |
 | `danszek-review` | independent review with own runs, browser measurements and mutation probes |
+| `danszek-decisions` | putting visual, motion or far-reaching product decisions to a human as a page drawn with the real design system |
 | `danszek-orchestration` | running frontier subagents and local models through a board safely |
 | `danszek-code-style` | writing or reviewing code humans must understand by reading |
 

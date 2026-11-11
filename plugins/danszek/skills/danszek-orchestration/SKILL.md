@@ -120,7 +120,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 ## Design and prototype agents
 - **Design and prototype agents:** when they read earlier concepts as reference, require a distinct information architecture and an early interim screenshot of the start view. One concept mirrored a reference layout almost one to one; the interim check corrected it cheaply.
 - When a prototype is finished, start its preview server for the user yourself (agents stop their servers at the end), bind it to `127.0.0.1` and give that URL — `localhost` may resolve to IPv6 and look unreachable.
-- **Decision pages built from a design system** inline its token file and its component stylesheet byte-identical (copied by script, then diffed against the build), because the stylesheet alone defines no values and renders blank. Read everything else on the page before publishing it, since that part is the agent's own drawing.
+- **Visual, motion or far-reaching product decisions go to the human as a decision page** drawn with the real design system: method in `danszek-decisions`.
 
 ## Quota guard
 - Estimate usage of the billing window by **cost-weighted usage**, not raw tokens (plans weight models differently); calibrate with the figure the user sees.
