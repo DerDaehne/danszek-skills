@@ -17,7 +17,9 @@ description: Turn raw tickets into implementable, reviewable work items for agen
 
 ## Thinking rules
 - **Product vs. technical:** only product decisions go to a human (options A/B/C + recommendation). Decide technical ones yourself and record them as "technical decision (own responsibility): …". Asking technical questions as product questions is the most common refinement failure — check against examples first.
-- **Verify premises:** before reasoning about a function, column or flag, confirm it exists.
+- **Verify premises:** before reasoning about a function, column or flag, confirm it exists. Whether a platform hook can do something (follow a pointer continuously, stream, cancel) is read from its source wiring, not from its API name.
+- **Trace downstream before writing a state into a criterion:** a criterion "ends as dismissed" would have silently deleted data in a consumer. Check every user-facing word against the code or the design source.
+- **Read the reference implementation next to the prose docs** of a dependency or design system: the code settles details the prose leaves vague and exposes contradictions.
 - **Interplay rule:** when a rule or behaviour changes, list every other component that consumes the same data (search callers) and add an acceptance criterion for the interplay. Missing this is how a correct-looking change breaks a neighbour.
 - **Edge cases become criteria**, not prose ("only future-dated entries exist", "equal timestamps", "a non-human actor tries the human-only action").
 - **Dependencies:** "A blocks B" means A must be finished before B starts. Read direction carefully; justify non-obvious links.
@@ -28,7 +30,9 @@ description: Turn raw tickets into implementable, reviewable work items for agen
 - Concrete numbers (thresholds, limits, sizes) with their source (configuration/catalog, not scattered constants).
 
 ## Hand-off
-- No open product decision → ready. Otherwise leave the question with options and a recommendation.
+- No open product decision → ready. Otherwise leave the question with options and a recommendation; visual, motion or far-reaching questions as a decision page (`danszek-decisions`).
+- **Split along "spec complete" vs. "spec has a gap":** the buildable part reaches ready while the rest waits on the outside answer (a design system, an upstream library, a human).
+- **Reports to an upstream owner** (a gap or contradiction in its spec) are phrased independently of your stack, and every file:line and quote in them is checked against the source before filing. Re-read a ticket before citing it ("as proposed in X").
 - A **different model or person reviews the refinement** before it becomes ready — the refiner never promotes its own work. Small corrections can be made directly and listed as binding clarifications.
 - Before creating or splitting tickets, check what was created or changed recently in the same area (other planners may be working in parallel).
 

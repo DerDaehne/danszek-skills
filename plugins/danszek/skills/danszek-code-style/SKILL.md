@@ -22,6 +22,11 @@ description: Code style for agent-written code that humans must understand by re
 - A bug fix starts with a test that fails on main.
 - Existing tests are specification: changing an existing expectation needs an explicit reason in the commit message — never adapt a test just to make new behaviour pass.
 - **Every new test must fail against a mutant of the invariant it names** — run that mutant before reporting. (Classic trap: capturing the expected list before creating the data, so the assertion compares against an empty list and is always green.)
+- **Assert the premise** when it depends on the environment (text width with the installed font, screen size, locale, time zone, clock): a test about truncation first asserts that the text is truncated, so a font change fails loudly at the premise.
+- Assert the produced result, not the constant the code reads; a test that compares with the same constant cannot catch a wrong one.
+- Put identity and lookup choices (which owner, which window, which record) into a function tests can call with stand-ins, and keep at least one test through the real lookup path; a test that hands the looked-up object in directly misses a broken lookup.
+- When the unit runner cannot load the real framework or service, drive real instances over their own interface (IPC, HTTP, CLI) from a script. Keep socket paths short: Unix socket paths are limited to about 108 bytes, and a long temp dir made IPC fail without a clear error.
+- A flaky test is reproduced under synthetic load until it fails reliably, then made to wait for the event it needs, never for more time.
 - Clean up in `finally`, including inside helpers (child processes, servers, temp dirs, timers). Skip permission-based tests when running as a privileged user.
 
 ## Commits
@@ -33,6 +38,8 @@ description: Code style for agent-written code that humans must understand by re
 
 ## Hygiene
 - Follow the file's indentation; prefer a formatter check over manual care.
+- **Check the diff after every scripted edit.** Edit code that contains regexes or `$` with an exact-replacement tool; substitute file contents literally (some replace functions interpret `$&` in the replacement — in JavaScript `split(a).join(b)` is literal, `replace` is not). A one-liner with an unlucky delimiter once mangled a whole file.
+- Lint the files you changed directly and read the exit status or machine-readable output: a check that stops at the first warning elsewhere hides yours, and one linter's text output stayed silent while it exited non-zero.
 - Report test names, outputs and file lists exactly as they appear — never paraphrase from commit subjects.
 - New dependencies only with a justification; standard library → platform → package.
 - Public repositories carry no personal names, e-mail addresses, paths, hostnames, credentials, hardware details or internal planning references — including commit metadata.
