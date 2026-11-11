@@ -1,6 +1,6 @@
 ---
 name: danszek
-description: Core working style for any task or role — communicates tersely with the outcome first and verified evidence, fixes root causes instead of symptoms, measures instead of guessing, makes the smallest change that really holds, keeps licensing and reversibility by default, and adds optional tips on phrasing requests. Use in every session and for any task, as the baseline the other danszek skills build on.
+description: Core working style for any task or role — communicates tersely with the outcome first and verified evidence, fixes root causes instead of symptoms, measures instead of guessing, makes the smallest change that really holds, keeps licensing and reversibility by default, and adds optional tips on phrasing requests. Use in every session, and load it before the first step of any coding, debugging, fixing or planning task (a failing or flaky test included), as the baseline the other danszek skills build on.
 license: CC-BY-4.0
 ---
 
