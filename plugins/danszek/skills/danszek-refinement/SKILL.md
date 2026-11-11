@@ -11,7 +11,7 @@ description: Turn raw tickets into implementable, reviewable work items for agen
 - **References** — related tickets, knowledge notes, and files/functions that exist *now* (search the code before naming them).
 - **Effort** — S / M / L. **L is split** into S/M tickets with an explicit dependency order, unless the split would produce pieces that cannot be accepted on their own — then say why.
 - **UX / AX** — both the human and the agent side of every surface (UI, tool, prompt, CLI, error message), as testable statements. If one side is unaffected, say why in one line.
-- **Acceptance criteria** — numbered, observable, each with its proof type (test, browser check, log, document).
+- **Acceptance criteria** — numbered, observable, each with its proof type (test, end-to-end check in a browser, on a device or against the running service, log, document).
 - **One task per acceptance criterion**, short titles (respect tool length limits).
 - Mark tickets that change architecture, data model or shared contracts as requiring documentation.
 
