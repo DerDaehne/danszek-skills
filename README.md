@@ -8,18 +8,26 @@ working style, communication style and review culture, kept generic and free of 
 | `danszek` | always, standalone: communication and solution style for any task or role (the others build on it) |
 | `danszek-collaboration` | working with a terse, decision-oriented maintainer: answer shape, decisions, autonomy limits, privacy, rhythm |
 | `danszek-refinement` | turning raw tickets into implementable ones; reviewing refinements |
-| `danszek-review` | independent review with own runs, browser measurements and mutation probes |
-| `danszek-decisions` | putting visual, motion or far-reaching product decisions to a human as a page drawn with the real design system |
-| `danszek-orchestration` | running frontier subagents and local models through a board safely |
+| `danszek-review` | independent review with own runs, measurements on the real surface and mutation probes |
+| `danszek-decisions` | putting visual, motion or far-reaching product decisions to a human as a page drawn with the real design system (page template and byte-identity script included) |
+| `danszek-orchestration` | running frontier subagents and local models through a board safely (agent-rules template and CI wait script included) |
 | `danszek-code-style` | writing or reviewing code humans must understand by reading |
 
-Each skill is a folder with a `SKILL.md` (YAML frontmatter `name` + `description`, then instructions) — the
-open Agent Skills layout, understood by Claude and by OpenAI's ChatGPT/Codex.
+Each skill is a folder with a `SKILL.md` (YAML frontmatter `name`, `description` and `license`, then
+instructions) — the open [Agent Skills](https://agentskills.io/specification) layout, understood by Claude and
+by OpenAI's ChatGPT/Codex. Longer material sits beside it in `references/` (read when the skill says so),
+`assets/` (templates) and `scripts/` (run, not read: Python 3 with the standard library, or Bash with git and the GitHub CLI).
+
+In Claude Code the plugin also brings a **reviewer subagent**, `danszek:reviewer`, which preloads
+`danszek-review` and `danszek-code-style` and reviews work in its own context: ask for it by name ("have the
+danszek reviewer check this branch") or with `@agent-danszek:reviewer`.
 
 ```
 .claude-plugin/marketplace.json          Claude Code marketplace (this repository)
 plugins/danszek/.claude-plugin/plugin.json
-plugins/danszek/skills/<skill>/SKILL.md  the skills (single source of truth; optional references/ beside it)
+plugins/danszek/skills/<skill>/SKILL.md  the skills (single source of truth; references/, assets/, scripts/ beside it)
+plugins/danszek/agents/reviewer.md       the reviewer subagent (Claude Code only)
+plugins/danszek/evals/                   trigger evals for `claude plugin eval`
 scripts/build-zips.sh                    dist/<skill>.zip for upload UIs
 scripts/install.sh                       symlinks for local CLIs
 ```
@@ -49,7 +57,7 @@ scripts/install.sh claude        # links every skill into ~/.claude/skills
 
 Available on Pro, Max, Team and Enterprise plans.
 
-1. Build the upload files: `scripts/build-zips.sh` → `dist/<skill>.zip` (each zip contains the `<skill>/` folder: `SKILL.md` plus any reference files).
+1. Build the upload files: `scripts/build-zips.sh` → `dist/<skill>.zip` (each zip contains the `<skill>/` folder: `SKILL.md` plus its `references/`, `assets/` and `scripts/`).
 2. Settings → Capabilities → enable **Code execution and file creation** (skills need it).
 3. Sidebar **Customize → Skills → + → Upload a skill**, choose a zip. Repeat per skill.
 
@@ -82,11 +90,24 @@ into its system prompt, project instructions or `AGENTS.md`. Keep the `descripti
 
 - One rule per bullet, dense, generic: no personal names, no project or company internals, no paths or hosts.
 - Explain *why* only where the rule is not self-evident; prefer a concrete failure the rule prevents.
+- Frontmatter holds only `name`, `description` and `license`: claude.ai uploads and the Skills API reject
+  Claude-Code-only keys such as `argument-hint` or `disable-model-invocation`. Descriptions say what the
+  skill does and when to use it, in the third person, under 1,024 characters, without `: ` (it breaks YAML).
+- Keep a `SKILL.md` body under about 5,000 tokens; move material that is needed only in some situations into
+  `references/` and name the situation where the body points to it.
+- Raise `version` in `plugins/danszek/.claude-plugin/plugin.json` with every change: installed plugins stay on
+  the version they have until it changes.
 - Validate before committing:
 
   ```sh
   claude plugin validate .
-  claude plugin validate ./plugins/danszek
+  claude plugin validate --strict ./plugins/danszek
+  ```
+
+- After changing a description, run the trigger evals (real model calls on your account, a few cents per run):
+
+  ```sh
+  cd plugins/danszek && claude plugin eval . --runs 1 --ablation none --no-publish
   ```
 
 The skills are refined in regular retrospectives as new lessons come in.

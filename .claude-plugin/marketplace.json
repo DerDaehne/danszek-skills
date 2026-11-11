@@ -6,7 +6,7 @@
     {
       "name": "danszek",
       "source": "./plugins/danszek",
-      "description": "Seven skills distilled from agent-driven development practice: core working style, collaboration, refinement, review, decision pages, orchestration, code style."
+      "description": "Seven skills distilled from agent-driven development practice: core working style, collaboration, refinement, review, decision pages, orchestration, code style; plus a reviewer subagent for Claude Code."
     }
   ]
 }
