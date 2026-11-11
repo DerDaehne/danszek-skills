@@ -1,6 +1,6 @@
 # CI and delivery
 
-Read this before pushing, while waiting for CI, and before shipping a container or touching a shared server. Everything in the main skill applies too.
+Read this before pushing, while waiting for CI, and before shipping a container or touching a shared server. Everything in the main skill applies too. On GitHub, `scripts/ci-wait.sh EXPECTED [REF] [TIMEOUT]` in this skill's directory is the saved wait loop the first two rules ask for: it resolves the full hash, waits until the expected number of workflows has a finished run, prints each result and exits non-zero on a failure or a timeout.
 
 - **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint, packaging) can stay unnoticed for days otherwise: two workflows once stayed red for six days because the push routine checked only the local gates, although this rule already existed. Put the check into the push routine itself (a saved script that lists every run of the full pushed hash) and look again a few minutes later, when the slow workflows finish.
 - Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running. Query by the full commit hash: a short hash returned an empty list and the loop waited until its timeout. Keep that loop as a saved script and call it; retyped inline under time pressure, the same text-match bug came back despite this rule.
