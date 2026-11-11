@@ -1,0 +1,15 @@
+# Quota guard
+
+Read this when agents run on a plan with usage limits (a billing window, a weekly quota), before spawning premium models in parallel, and whenever usage nears a limit.
+
+- Estimate usage of the billing window by **cost-weighted usage**, not raw tokens (plans weight models differently); calibrate with the figure the user sees.
+- Below ~70 % continue; 70–85 % no new spawns and inform; ≥ 85 % park. Let the user set the threshold per billing window ("up to 80 %", "up to 95 %, then pause") and recalibrate whenever they report the real figure.
+- **Quota windows come from the user's display, not from the cost tool:** the tool's 5-hour block ended 50 minutes before the user's window; a "reset in 3 minutes" claim nearly overran the limit.
+- The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate can be off by a factor of two between a cheap-model and a frontier-model window; ask the user for the real figure more often when frontier models dominate. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
+- Some models weigh far more on a subscription quota than their API price suggests. Before running several agents of a new or premium model in parallel, start one, ask the user for the real quota figure after a short while, then decide on parallelism — three parallel premium agents emptied a whole window while the cost estimate showed under half.
+- Some models also have their own **weekly** quota with a fixed reset, separate from the session window, and the whole account has a weekly window too. Ask the user for both figures regularly and plan premium-model work against the weekly one; a session guard alone once missed an account at 87 % of its week.
+- Recurring prompts (scheduled checks) point to where the calibration lives instead of copying its numbers. A copied figure went stale within days and would have parked agents at half the real usage.
+- A cost estimator may not price a new model correctly at all (one window showed 10 % while the user saw 33 %). For such models steer by the user's figure and elapsed time, not by the dollar estimate.
+- **Near a quota limit, stop agents and park them yourself** (stop, then commit their worktree as WIP and comment): an agent running its own park protocol spends the last percent.
+- Near the end of a window start only **small, parkable** tasks with "commit early and often; on park commit WIP immediately" — a park then leaves a green, resumable state.
+- A cheaper model may review a stronger model's work (still independent); a small fix round with reviewer-provided tests can be verified by the orchestrator with one spot mutation. Near a planned session end, **ask** before parking if quota allows continuing; local runs may continue detached if the user agrees.

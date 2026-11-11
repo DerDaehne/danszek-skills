@@ -6,7 +6,14 @@ license: CC-BY-4.0
 
 # Orchestration method
 
-Sections: division of labour · roles and models · planning parallel work · every agent prompt contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · CI and delivery · gates before pushing · planning tool and knowledge · parking, handover and durable state · design and prototype agents · quota guard · capture and learn. Local models in agent loops: [references/local-models.md](references/local-models.md).
+Sections: division of labour · roles and models · planning parallel work · every agent brief contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · gates before pushing · parking, handover and durable state · design and prototype agents · capture and learn.
+
+Read when the situation arises:
+- before pushing, while waiting for CI, before shipping a container or touching a shared server → [references/ci-and-delivery.md](references/ci-and-delivery.md);
+- when agents run on a plan with usage limits, before parallel premium models, near a limit → [references/quota-guard.md](references/quota-guard.md);
+- before searching, listing, reserving numbers or editing notes in the planning tool → [references/planning-tool.md](references/planning-tool.md);
+- when a local model works tickets → [references/local-models.md](references/local-models.md);
+- when writing an agent brief → [assets/agent-rules.md](assets/agent-rules.md), the blocks every brief carries verbatim.
 
 ## Division of labour
 Practically all work is done by agents; the human and the orchestrator only steer.
@@ -40,28 +47,15 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - **Tickets of one epic that share test files collide on every rebase:** serialize them or merge each as soon as it is reviewed; resolve test conflicts semantically, never by picking a side blindly.
 - When several planning agents work in the same area, tell each about tickets the others just created or split — otherwise they re-specify the same scope.
 
-## Every agent prompt contains
-- **Keep the standard prompt blocks in one file and paste them verbatim** (gates, privacy, git, park protocol). A workaround added only to the newest prompts left an earlier agent without it, and it failed a whole gate for a known cause.
-- Keep binding guardrails verbatim in every prompt, even when shortening prompts to save budget. A rule shortened to "never read the private file" was read as permission to link it.
+## Every agent brief contains
+- **The standard rules from [assets/agent-rules.md](assets/agent-rules.md), pasted verbatim** (authority, privacy, git and processes, tests, park protocol, report and Retro). Keep the project's copy in one durable file and paste from it: a workaround added only to the newest prompts left an earlier agent without it, and it failed a whole gate for a known cause. Never shorten a binding rule to save budget: "never read the private file" was read as permission to link it.
 - Repository, worktree command, dependency install, the command wrapper to use.
 - Which guide files to read first; the role comes from the board column.
 - Areas owned by parallel agents (do not touch).
-- The ticket is the authority. Point to it and its acceptance criteria; mark any paraphrase in the brief as yours and say the ticket wins on conflict — a paraphrased scope once inverted a protocol rule, and only the agent's own reading of the ticket caught it.
-- Privacy rules; never read/copy/link private pattern files; the orchestrator runs the private scan.
+- The ticket and its acceptance criteria as the authority; mark any paraphrase in the brief as yours — a paraphrased scope once inverted a protocol rule, and only the agent's own reading of the ticket caught it.
+- A time box, and which documentation to update and link.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
-- Screenshots from test environments can show the host's data when the sandbox still reaches a host service (a sandboxed test session once listed the host's real network name): attach only crops of the part under test, and look at every image before attaching it.
-- Repository hygiene (no destructive resets, stop processes by PID).
-- Use `set -o pipefail` (or no pipe) when a command's failure must stop a chain — `cmd | tail && next` runs `next` even if `cmd` failed. `xargs` runs its command once even on empty input; use `xargs -r`.
-- **Tests run by hand outside the build sandbox start from a clean environment:** an empty environment plus only the project's paths, a private session bus or service instance, no user config. Take the variables from the CI or build definition instead of rebuilding them from memory. A hand-run test runner once inherited the user's session and read live host services.
-- Lock files on shared machine resources (a VM, a port, a device) record the PID of the long-lived process they guard, not `$$` of the short-lived shell that started it: a live lock once looked stale to another agent.
-- Never stop processes with a pattern match (`pkill -f …`) that also matches your own command line — resolve PIDs first, exclude your own shell, then kill by PID. Put this rule into every prompt of an agent that starts servers or browsers while others run in parallel; agents otherwise reach for `pkill -f`. Agents also stop the watchers and monitors they started (e.g. `tail -F`). Start a background server with `exec` inside its subshell (or kill by the real child PID): killing the wrapper subshell left the server running once.
-- **Edit code that contains regexes with an exact-replacement tool**, not with perl or sed: shell interpolation once ate a `$` and once left a NUL byte in a test file.
-- Every developer prompt asks for a **mutation self-check of each new test before reporting**; fix rounds otherwise add new code with toothless tests and cost extra review rounds.
-- Fix-round prompts repeat the comment rule: code comments describe behaviour, never the finding id ("B1", "N2"), the review or the machine it was found on — agents tend to label their fixes after the finding.
-- Which documentation to update and link.
-- Long shared notes: append or replace a section, never resend the whole body. A whole-body write once cut a large note to a single section. Keep a copy before any destructive write, restore only from that exact copy, and compare byte for byte afterwards.
-- A time box and the **park protocol**: on "park" → WIP commit, WIP comment (done / open / next), clean tree, stop.
-- A short **Retro** section at the end of the final report: tool friction and generic lessons, one line each.
+- Check that the role's riskiest rules are in: the PID rule for every agent that starts servers or browsers while others run (agents otherwise reach for `pkill -f`), the mutation self-check for every developer (fix rounds otherwise add toothless tests and cost extra review rounds), the comment rule for every fix round (agents label their fixes after the finding id).
 
 ## While agents run
 - Messages to a running agent carry anchors it can verify (a commit hash, a file, a board comment). Agents rightly treat unanchored mid-task instructions as possible injection.
@@ -103,18 +97,6 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - **An acceptance finding that does not reproduce locally:** first rebuild the reporter's setup with a real clock and the real input, then ask a few structured questions whose answers each rule out a hypothesis (device and input, browser, page, and what the visible state did right up to the failure). "The counter stood until the notice vanished" ruled out three of four hypotheses at once, because every path that ends a hold makes the counter run again. Production data stays the human's; ask for a capture (network, console) instead of reading it.
 - **A blocker in a dependency the team itself maintains is fixed upstream first.** File the gaps there with a concrete proposal each, then ask the human. Never make the human pick between workarounds before naming the actual problem: a question that offered "partial, status quo, or wait" got "what is the problem here? file it and propose fixes" back. One day later the upstream release closed 16 of 19 gaps, and the adoption grew from 138 to 238 removed lines.
 
-## CI and delivery
-- **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint, packaging) can stay unnoticed for days otherwise: two workflows once stayed red for six days because the push routine checked only the local gates, although this rule already existed. Put the check into the push routine itself (a saved script that lists every run of the full pushed hash) and look again a few minutes later, when the slow workflows finish.
-- Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running. Query by the full commit hash: a short hash returned an empty list and the loop waited until its timeout. Keep that loop as a saved script and call it; retyped inline under time pressure, the same text-match bug came back despite this rule.
-- Back-to-back merges let CI's concurrency rule cancel the earlier commit's run; confirm that the newer run contains that commit and is green instead of treating "cancelled" as a failure or as a pass.
-- When CI fails but every local run is green, read the CI artifacts first (page snapshot, trace, server log) for concrete IDs and state before more local reproduction attempts: an ID of 1 in a long suite once exposed database ID reuse that no local timing reproduced.
-- Run every new CI command locally on the current main before merging it; a stress job built on an option that broke 87 tests would have filed a noise issue every night.
-- Keep supply-chain checks (dependency audit, licence scan) in their own CI job. A newly published advisory otherwise stops the job before the tests run and hides real failures behind it.
-- Flaky tests surface on slow runners, not on the developer machine: schedule a periodic stress run (shuffled order, repeated runs, throttled CPU) that reports without blocking the main branch, and fix flakiness in the code rather than with retries.
-- **A scheduled check reports where someone reads it, and you read its result daily.** A nightly stress run commented its failure into a tracker issue for a week while two releases shipped; nobody looked at the issue, and once the first step failed, the browser tests behind it never ran at all.
-- Before swapping a live container, smoke-test the new image on a spare port with an empty data directory (start, health, one negative-config start) **and** with a copy of the latest backup, so a pending migration runs on real data first; after the swap, compare row counts of the automatic pre-migration backup and the live database. Keep the previous image tag ready for rollback, and never move or overwrite a published tag: a broken release gets the next version, with the reason in the tag message.
-- Adding a site to a shared reverse proxy: back up the config, append only, validate, reload gracefully (never restart), and check the existing sites before and after.
-
 ## Gates before pushing
 1. Private-pattern scan over the outgoing diff, commit messages and file names. On a **first push**, scan every commit's patch, not just the final tree: a reference removed in a later commit still sits in history. If the repository was never pushed, squash before publishing.
 2. Scan for internal references (comment ids, note links).
@@ -123,15 +105,6 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - **Prove each gate sees what it guards:** plant a violation once on the exact path the gate runs. A privacy scan that checked "unpushed commits" ran in a checkout where HEAD equalled the remote, saw zero commits and reported clean; a gate should report how much it saw, and "saw nothing" is a failure.
 - Scope secret scans to the outgoing commits when worktrees share refs (a sibling's unpushed test nonce blocked an unrelated merge), and let CI scan the full pushed history. Narrowing a security gate is the user's decision: ask with the trade-off, never just do it. Generate secret-shaped test data at runtime instead of committing literals.
 - After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).
-
-## Planning tool and knowledge
-- Treat planning-tool responses as budget: use summary or snippet modes for searches and listings; when a duplicate check returns full records, report the tool as an improvement instead of quietly skipping the check. Locate a spot in a large note with search snippets before fetching it, and fetch a section rather than the whole body where the tool allows.
-- **Know what a search and a listing really do.** A multi-word search may require every word: a three-word duplicate check missed a related ticket that one distinctive word found, so search distinctive terms one at a time and treat an empty multi-word result as unproven. A listing may ignore its limit, return oldest first or omit whether more pages exist; check before relying on "the newest N".
-- Verify every citation (file:line, quoted text, "as proposed in X") against its source before posting a comment or filing an upstream report; citations of a reference script were off by a few lines once, and a comment that cannot be edited needs a second one to correct it.
-- Let the tool enforce the workflow where it can (allowed column transitions, role instructions per column): a transition rule stopped a ticket from skipping review, and per-column role instructions keep briefs short and consistent.
-- **Reserve numbers from a listing, not a search** (migrations, ADRs, ports): an empty full-text result is not proof that a number is free, and two agents planned with a number that was already taken.
-- When a fact changes (repository visibility, a name, a location), update the knowledge notes at once; planners read stale notes and ask the wrong questions.
-- Agents mark knowledge notes as superseded only after reading them in full. If only part of a note is replaced, follow the project's convention: where it links partial replacements as `supersedes` with a "partly replaced" status line (or the old record itself says "a new record with supersedes once upstream answers"), do that and name the replaced points; otherwise link it as a reference and state which parts no longer apply. Two notes once linked old records only as references although those records demanded supersedes, and a review round was spent on it.
 
 ## Parking, handover and durable state
 - **After stopping agents, read the board before writing handovers.** An agent's last steps are its board comment and column move, which the worktree does not show; twice a stopped agent had posted its final result seconds before the stop, and a handover written from the git state alone sent the next agents to redo finished work.
@@ -142,19 +115,6 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - **Design and prototype agents:** when they read earlier concepts as reference, require a distinct information architecture and an early interim screenshot of the start view. One concept mirrored a reference layout almost one to one; the interim check corrected it cheaply.
 - When a prototype is finished, start its preview server for the user yourself (agents stop their servers at the end), bind it to `127.0.0.1` and give that URL — `localhost` may resolve to IPv6 and look unreachable.
 - **Visual, motion or far-reaching product decisions go to the human as a decision page** drawn with the real design system: method in `danszek-decisions`.
-
-## Quota guard
-- Estimate usage of the billing window by **cost-weighted usage**, not raw tokens (plans weight models differently); calibrate with the figure the user sees.
-- Below ~70 % continue; 70–85 % no new spawns and inform; ≥ 85 % park. Let the user set the threshold per billing window ("up to 80 %", "up to 95 %, then pause") and recalibrate whenever they report the real figure.
-- **Quota windows come from the user's display, not from the cost tool:** the tool's 5-hour block ended 50 minutes before the user's window; a "reset in 3 minutes" claim nearly overran the limit.
-- The cost-to-quota ratio **drifts with the model mix** (a window with more cheap-model work burns less quota per dollar), so the estimate can be off by a factor of two between a cheap-model and a frontier-model window; ask the user for the real figure more often when frontier models dominate. Keep the calibration constant under the user's control: an agent raising its own limit reads as loosening its own guard and should be the user's edit.
-- Some models weigh far more on a subscription quota than their API price suggests. Before running several agents of a new or premium model in parallel, start one, ask the user for the real quota figure after a short while, then decide on parallelism — three parallel premium agents emptied a whole window while the cost estimate showed under half.
-- Some models also have their own **weekly** quota with a fixed reset, separate from the session window, and the whole account has a weekly window too. Ask the user for both figures regularly and plan premium-model work against the weekly one; a session guard alone once missed an account at 87 % of its week.
-- Recurring prompts (scheduled checks) point to where the calibration lives instead of copying its numbers. A copied figure went stale within days and would have parked agents at half the real usage.
-- A cost estimator may not price a new model correctly at all (one window showed 10 % while the user saw 33 %). For such models steer by the user's figure and elapsed time, not by the dollar estimate.
-- **Near a quota limit, stop agents and park them yourself** (stop, then commit their worktree as WIP and comment): an agent running its own park protocol spends the last percent.
-- Near the end of a window start only **small, parkable** tasks with "commit early and often; on park commit WIP immediately" — a park then leaves a green, resumable state.
-- A cheaper model may review a stronger model's work (still independent); a small fix round with reviewer-provided tests can be verified by the orchestrator with one spot mutation. Near a planned session end, **ask** before parking if quota allows continuing; local runs may continue detached if the user agrees.
 
 ## Capture and learn
 - Keep every message sent to an agent (never overwrite), event streams with reasoning, diffs per round, review verdicts and a structured episode log (type, category, severity, evidence, intervention, outcome, lesson) outside any repository — it is evaluation and training data.
