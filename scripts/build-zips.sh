@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds one upload-ready zip per skill (dist/<skill>.zip containing <skill>/SKILL.md) for Claude.ai and ChatGPT.
+# Builds one upload-ready zip per skill (dist/<skill>.zip containing the <skill>/ folder: SKILL.md plus any reference files) for Claude.ai and ChatGPT.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 skills="$root/plugins/danszek/skills"

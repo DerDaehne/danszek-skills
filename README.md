@@ -19,7 +19,7 @@ open Agent Skills layout, understood by Claude and by OpenAI's ChatGPT/Codex.
 ```
 .claude-plugin/marketplace.json          Claude Code marketplace (this repository)
 plugins/danszek/.claude-plugin/plugin.json
-plugins/danszek/skills/<skill>/SKILL.md  the skills (single source of truth)
+plugins/danszek/skills/<skill>/SKILL.md  the skills (single source of truth; optional references/ beside it)
 scripts/build-zips.sh                    dist/<skill>.zip for upload UIs
 scripts/install.sh                       symlinks for local CLIs
 ```
@@ -49,7 +49,7 @@ scripts/install.sh claude        # links every skill into ~/.claude/skills
 
 Available on Pro, Max, Team and Enterprise plans.
 
-1. Build the upload files: `scripts/build-zips.sh` → `dist/<skill>.zip` (each zip contains `<skill>/SKILL.md`).
+1. Build the upload files: `scripts/build-zips.sh` → `dist/<skill>.zip` (each zip contains the `<skill>/` folder: `SKILL.md` plus any reference files).
 2. Settings → Capabilities → enable **Code execution and file creation** (skills need it).
 3. Sidebar **Customize → Skills → + → Upload a skill**, choose a zip. Repeat per skill.
 
