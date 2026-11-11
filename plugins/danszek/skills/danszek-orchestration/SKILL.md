@@ -118,5 +118,5 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 
 ## Capture and learn
 - Keep every message sent to an agent (never overwrite), event streams with reasoning, diffs per round, review verdicts and a structured episode log (type, category, severity, evidence, intervention, outcome, lesson) outside any repository — it is evaluation and training data.
-- Collect agent experience systematically: copy the **Retro** section of every final report into a durable retro log, each entry with a status (open / filed where / in a skill / dropped and why). Lessons not written down leave with the agent's context.
-- Run retrospectives on a cadence: deduplicate against earlier findings, file only new ones, record the retro, give the user at most a few recommendations, and refine these skills.
+- Collect agent experience systematically: copy the **Retro** section of every final report, and your own notes, into a durable retro log, each entry with a status (open / filed where / in a skill / dropped and why). Lessons not written down leave with the agent's context.
+- **Run retrospectives on a cadence** (`/danszek:retro` in Claude Code): deduplicate against earlier entries and file only new findings; send **tool feedback** to the tool's owner as a ticket, after searching for an existing one; turn **generic lessons** into skill edits on a branch, one commit per theme; record the retro, report the result and ask the user only for real decisions, at most a few recommendations.

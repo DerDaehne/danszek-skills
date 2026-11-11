@@ -22,11 +22,17 @@ In Claude Code the plugin also brings a **reviewer subagent**, `danszek:reviewer
 `danszek-review` and `danszek-code-style` and reviews work in its own context: ask for it by name ("have the
 danszek reviewer check this branch") or with `@agent-danszek:reviewer`.
 
+It also brings the command **`/danszek:retro`** (Claude Code only): it runs the retrospective procedure from
+`danszek-orchestration` ("Capture and learn") — collect the agents' Retro sections and your own notes into the
+retro log, deduplicate, file tool feedback with the tool's owner, fold generic lessons into the skills, report.
+An optional argument narrows the scope (`/danszek:retro since the last release`).
+
 ```
 .claude-plugin/marketplace.json          Claude Code marketplace (this repository)
 plugins/danszek/.claude-plugin/plugin.json
 plugins/danszek/skills/<skill>/SKILL.md  the skills (single source of truth; references/, assets/, scripts/ beside it)
 plugins/danszek/agents/reviewer.md       the reviewer subagent (Claude Code only)
+plugins/danszek/commands/retro.md        the /danszek:retro command (Claude Code only)
 plugins/danszek/evals/                   trigger evals for `claude plugin eval`
 scripts/build-zips.sh                    dist/<skill>.zip for upload UIs
 scripts/install.sh                       symlinks for local CLIs
