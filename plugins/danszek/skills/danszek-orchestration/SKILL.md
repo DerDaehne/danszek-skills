@@ -5,7 +5,14 @@ description: Orchestrate a fleet of AI agents (frontier subagents plus local mod
 
 # Orchestration method
 
-Sections: roles and models · planning parallel work · every agent prompt contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · CI and delivery · gates before pushing · planning tool and knowledge · parking, handover and durable state · design and prototype agents · quota guard · capture and learn. Local models in agent loops: [references/local-models.md](references/local-models.md).
+Sections: division of labour · roles and models · planning parallel work · every agent prompt contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · CI and delivery · gates before pushing · planning tool and knowledge · parking, handover and durable state · design and prototype agents · quota guard · capture and learn. Local models in agent loops: [references/local-models.md](references/local-models.md).
+
+## Division of labour
+Practically all work is done by agents; the human and the orchestrator only steer.
+- **The human** decides product questions (batched, as a decision page or as options A/B/C with a recommendation), sets priorities and accepts finished work. Only the human closes tickets.
+- **The orchestrator** plans the flow, writes the briefs, picks model and effort per task, keeps its own context lean (agents read the files, the orchestrator reads their reports), runs only the gates (privacy scan, merge order, push, CI check of the pushed commit), spot-checks claims, keeps the board and the retro log, and relays decisions in both directions.
+- **Agents** do all refinement, implementation, review, decision-page drawing, research and skill edits — each with a narrow brief, and every author's work checked by a separate reviewer.
+- **What the orchestrator still does by hand,** and why: one-line chores (a typo, a board move) and verifying a test-only follow-up with one spot mutant, because a spawn costs more than the work; reading a page before it is published and running the push gates, because those are trust boundaries the orchestrator answers for. Anything beyond that becomes a brief, even when doing it yourself looks faster: it fills the orchestrator's context and skips the independent review.
 
 ## Roles and models
 | Work | Model tier |

@@ -28,6 +28,7 @@ description: Communication and collaboration style for working with a terse, dec
 - Record only what the user actually said. Do not turn a verdict into a ranking or an order the user never gave; mark your own ordering as yours.
 
 ## Autonomy boundaries (typical, confirm per project)
+- Division of labour when agents do the work: the human decides, prioritises and accepts; the orchestrator steers and runs the gates; agents do everything else (see `danszek-orchestration`, "Division of labour").
 - Shared local resources (a GPU the user also uses) need an explicit go before each use when the user says so; queue the work and ask, never start a heavy local run on a standing approval.
 - Before asking the user to install or authenticate a tool, check whether the package manager can provide it and whether it is already signed in. A CLI missing from the PATH can still be available and authenticated.
 - Pushing to the main branch only after automated secret/privacy scans and a scan for internal references, fast-forward only, with the repository's configured identity.
