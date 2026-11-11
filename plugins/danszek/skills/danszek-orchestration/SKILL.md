@@ -1,6 +1,7 @@
 ---
 name: danszek-orchestration
-description: Orchestrate a fleet of AI agents (frontier subagents plus local models) through a ticket board — model choice per role, safe parallelism, worktrees, author/reviewer loops, merge and push gates, quota guarding, parking, local-model sandboxing and recovery, retrospectives and learning-data capture. Use when coordinating tickets rather than implementing one yourself.
+description: Orchestrates a fleet of AI agents (hosted subagents and local models) through a ticket board — model choice per role, safe parallel work in worktrees, agent briefs, author/reviewer loops, merge and push gates, CI watching, quota guarding, parking and handover, retrospectives. Use when coordinating several tickets or agents rather than implementing one yourself.
+license: CC-BY-4.0
 ---
 
 # Orchestration method

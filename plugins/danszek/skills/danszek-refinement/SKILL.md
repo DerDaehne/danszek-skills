@@ -1,6 +1,7 @@
 ---
 name: danszek-refinement
-description: Turn raw tickets into implementable, reviewable work items for agent-driven development — goal, scope, references, effort, UX/AX criteria, observable acceptance criteria, one task per criterion, correct dependencies, and a strict product-vs-technical split. Use for tickets in backlog/refine, when splitting large tickets, and when reviewing a refinement.
+description: Turns raw tickets into implementable, reviewable work items for agent-driven development — goal, scope, references, effort, UX/AX and observable acceptance criteria, one task per criterion, correct dependencies, and a strict product-vs-technical split. Use for tickets in backlog or refinement, when splitting large tickets or writing acceptance criteria, and when reviewing a refinement.
+license: CC-BY-4.0
 ---
 
 # Refinement method

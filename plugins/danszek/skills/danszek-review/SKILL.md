@@ -1,6 +1,7 @@
 ---
 name: danszek-review
-description: Independent, evidence-based code review — re-run everything, diff against the merge base, drive user-facing surfaces the way users reach them (browser, device, CLI, API client), mutation-probe every fix and every new test, report findings as file:line with fix and required test, and close with a category/severity table and an explicit verdict. Use for reviewing branches, fix rounds, and work produced by other agents or local models.
+description: Independent, evidence-based code review — re-runs every check, diffs against the merge base, drives user-facing surfaces the way users reach them (browser, device, CLI, API client), mutation-probes every fix and every new test, and reports findings as file:line with fix and required test plus a category/severity table and an explicit verdict. Use when reviewing a branch, pull request or fix round, or work produced by another agent or a local model.
+license: CC-BY-4.0
 ---
 
 # Review method

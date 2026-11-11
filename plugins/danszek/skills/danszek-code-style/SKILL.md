@@ -1,6 +1,7 @@
 ---
 name: danszek-code-style
-description: Code style for agent-written code that humans must understand by reading — readable code over comments, one repository language, lean but not dense, tests that prove the invariant they name, honest commits, errors with a way out, privacy-safe public repositories. Use before writing or reviewing code.
+description: Code style for agent-written code that humans must understand by reading — readable code over comments, shallow nesting and short functions, one repository language, lean but not dense, tests that fail when the invariant they name breaks, honest commits, errors with a way out, privacy-safe public repositories. Use before writing, refactoring or reviewing code or tests.
+license: CC-BY-4.0
 ---
 
 # Code style

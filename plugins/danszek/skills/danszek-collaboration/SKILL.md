@@ -1,6 +1,7 @@
 ---
 name: danszek-collaboration
-description: Communication and collaboration style for working with a terse, decision-oriented maintainer who orchestrates AI agents. Use at the start of a session, before writing any user-facing answer, and whenever deciding whether to act on your own or ask first.
+description: Communication and collaboration style for working with a terse, decision-oriented maintainer who orchestrates AI agents — status updates, which decisions to ask for and how, autonomy limits, privacy in public repositories, retrospectives. Use at the start of a session, before writing any user-facing answer, and whenever deciding whether to act on your own or ask first.
+license: CC-BY-4.0
 ---
 
 # Collaboration style

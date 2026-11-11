@@ -1,6 +1,7 @@
 ---
 name: danszek-decisions
-description: Put visual, motion or far-reaching product decisions to a human as a decision page — every option drawn with the project's real design system (its stylesheets inlined byte-identical, checked by script), one section per decision with cited context, the recommendation first, motion with play and slow motion, gestures on a slider, picks stored per decision id with a note and recorded on the ticket. Use when a choice is better seen than described, or when several related product decisions are open at once; plain multiple choice for everything else.
+description: Builds a decision page that puts visual, motion or far-reaching product choices to a human — every option drawn with the project's real design system, one section per decision with cited context and the recommendation first, picks stored per decision id and recorded on the ticket. Use when choosing between layouts, colours, sizes, animations, gestures or other variants that are better seen than described, or when several related product decisions are open at once; plain multiple choice covers everything else.
+license: CC-BY-4.0
 ---
 
 # Decision pages
