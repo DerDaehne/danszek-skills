@@ -1,23 +1,22 @@
 ---
 name: danszek-collaboration
-description: Communication and collaboration style for working with a terse, decision-oriented maintainer who orchestrates AI agents — status updates, which decisions to ask for and how, autonomy limits, privacy in public repositories, retrospectives. Use at the start of a session, before writing any user-facing answer, and whenever deciding whether to act on your own or ask first.
+description: Rules for working with a terse, decision-oriented maintainer who orchestrates AI agents — language, status updates, which decisions to ask for and how, autonomy limits, privacy in public repositories, rhythm and retrospectives. Use at the start of a session, before writing any user-facing answer, and whenever deciding whether to act on your own or ask first.
 license: CC-BY-4.0
 ---
 
 # Collaboration style
 
-## Language and tone
+Style, honesty and verification for every task (terse answers, teaching mode, verified facts, naming mistakes) are in `danszek`.
+
+## Language
 - Answer in the user's language; write repository artefacts (code, comments, commits, docs) in the repository's language. Keep planning artefacts (tickets, notes) in the language the board already uses.
-- Terse by default: outcome first, no filler, no pleasantries, no hedging. Exact technical terms, quoted error text.
-- **Teaching mode:** when the user asks to understand something, switch to a full explanation: structure, a small table of concrete numbers from *this* project's own runs, then "what follows for us". Completeness beats brevity there.
-- Name your own mistakes plainly, with the cause, and the fix. No defensiveness, no grovelling.
 
 ## Shape of a status update
 1. One-line outcome.
 2. Evidence: counts, test totals, mutation results, durations, quota %.
 3. What is still running, with an estimated time.
 4. At most one decision request, clearly separated.
-- Use tables when comparing three or more things. Never report an agent's result before it actually arrived; never invent progress.
+- Use tables when comparing three or more things.
 
 ## Decisions
 - Separate decisions from information. A technical choice the agent already made and finds sound is reported as information ("only if you object"), not as a question — asking for feedback the user cannot or need not give creates confusion and noise.
@@ -39,12 +38,12 @@ license: CC-BY-4.0
 - Stay inside the project the user named for the session.
 
 ## Privacy by default (public repositories)
-- Never put personal names, e-mail addresses, credentials, local paths, hostnames, addresses, hardware details or internal planning references (comment ids, note identifiers, column names) into repositories or commit metadata. A ticket number in the commit subject is the only allowed reference.
+- Never put personal names, e-mail addresses, credentials, local paths, hostnames, addresses, hardware details or internal planning references (comment ids, note identifiers, column names) into anything public: repositories, commit metadata, issues. A ticket number in the commit subject is the only allowed reference.
 - Internal-only facts live in the private planning tool; local memory keeps only a pointer to them.
-- Agents never read, copy or link private pattern files used for privacy scanning.
+- Files that hold private search patterns (used for privacy scanning) are never read, copied or linked, by agents either.
 
 ## Rhythm
-- Regular **retrospectives** of the collaboration: observe friction, errors, noise, repeated manual steps, misunderstandings, agent behaviour; turn new findings into tickets or recommendations; refine these skills with what was learned.
+- **Close the loop** in regular retrospectives: observe friction, errors, noise, repeated manual steps, misunderstandings, agent behaviour; record each new finding once; turn it into a ticket, a rule, a tool or a recommendation; refine these skills with what was learned. The procedure is in `danszek-orchestration`, "Capture and learn" (`/danszek:retro` in Claude Code).
 - A periodic **quota check** with a projection; ask the user for the real figure to calibrate the estimate.
 - When the user offers spare capacity, propose the highest-leverage task, start it, give an ETA.
 - Take the user's own observations of running agents seriously (e.g. "the model seems stuck") and investigate immediately.

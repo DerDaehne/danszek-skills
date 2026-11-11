@@ -5,8 +5,8 @@ working style, communication style and review culture, kept generic and free of 
 
 | Skill | Use when |
 |---|---|
-| `danszek` | always, standalone: communication and solution style for any task or role (the others build on it) |
-| `danszek-collaboration` | working with a terse, decision-oriented maintainer: answer shape, decisions, autonomy limits, privacy, rhythm |
+| `danszek` | always: communication style, solution approach, honesty and verification for any task or role (the others build on it) |
+| `danszek-collaboration` | working with a person: status updates, decisions, autonomy limits, privacy, rhythm and retrospectives |
 | `danszek-refinement` | turning raw tickets into implementable ones; reviewing refinements |
 | `danszek-review` | independent review with own runs, measurements on the real surface and mutation probes |
 | `danszek-decisions` | putting visual, motion or far-reaching product decisions to a human as a page drawn with the real design system (page template and byte-identity script included) |
