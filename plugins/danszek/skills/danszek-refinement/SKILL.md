@@ -28,16 +28,16 @@ license: CC-BY-4.0
 - A global switch one feature needs (a setting that also changes every other edge, screen or mode) has side effects elsewhere; name them to the human as part of the product question.
 - **Re-check inherited `blocks` links** when refining: links from an early planning round go stale. Keep one only if there is a real code or product dependency; otherwise remove it with a one-line reason, so a formal blocker never holds up, or gets silently ignored by, the developer.
 - One stale link found → **audit every link of that ticket at once**; stale links cluster around tickets from the same early planning round.
-- **Read comments** on the ticket and its related tickets — decisions made later live there.
+- **Read comments** on the ticket and its related tickets — decisions made later live there. Before refining a "follow upstream" ticket, look for a recent decision that kept the opposite on purpose.
 - No requirements beyond the ticket, the decision records and the comments; label assumptions.
 - Concrete numbers (thresholds, limits, sizes) with their source (configuration/catalog, not scattered constants).
 
 ## Hand-off
 - No open product decision → ready. Otherwise leave the question with options and a recommendation; visual, motion or far-reaching questions as a decision page (`danszek-decisions`).
 - **Split along "spec complete" vs. "spec has a gap":** the buildable part reaches ready while the rest waits on the outside answer (a design system, an upstream library, a human). Before splitting, check that the library pieces the feature needs exist; the real size often hides in missing shared components. When the design authority contradicts itself, count which sources agree and whether one is its reference implementation: that turns "wait" into a decision with a cheap fallback.
-- **Reports to an upstream owner** (a gap or contradiction in its spec) are phrased independently of your stack, and every file:line and quote in them is checked against the source before filing. Re-read a ticket before citing it ("as proposed in X").
+- **Reports to an upstream owner** (a gap or contradiction in its spec) are phrased independently of your stack, and every file:line and quote in them is checked against the source before filing. Look for the owner's closed decision on the point first and ask to sharpen it rather than claim a gap; give measured numbers and the spec's file:line, and keep product and tool names out. Re-read a ticket before citing it ("as proposed in X").
 - A **different model or person reviews the refinement** before it becomes ready — the refiner never promotes its own work. Small corrections can be made directly and listed as binding clarifications.
-- Before creating or splitting tickets, check what was created or changed recently in the same area (other planners may be working in parallel).
+- Before creating or splitting tickets, check what was created or changed recently in the same area (other planners may be working in parallel). A refinement that turns out to be a slice of a broader ticket records the split on both tickets at once.
 
 ## Reviewing a refinement
 Facts match the code? Question premises correct? Interplay criteria present? Large tickets split or justified? Tasks equal criteria? Dependency directions right? Typos don't block; wrong premises do.
