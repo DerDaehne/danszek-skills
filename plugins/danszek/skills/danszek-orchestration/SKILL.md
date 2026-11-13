@@ -56,7 +56,8 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - A time box, and which documentation to update and link.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
 - Scratch files belong to the agent that made them. Never tell a fix agent to delete a reviewer's probes "unless the re-review needs them": it judged they were not needed and the reviewer had to rebuild its runner. The owner cleans up at the end.
-- Check that the role's riskiest rules are in: the PID rule for every agent that starts servers or browsers while others run (agents otherwise reach for `pkill -f`), the mutation self-check for every developer (fix rounds otherwise add toothless tests and cost extra review rounds), the comment rule for every fix round (agents label their fixes after the finding id).
+- Check that the role's riskiest rules are in: the PID rule for every agent that starts servers or browsers while others run (agents otherwise reach for `pkill -f`), the mutation self-check for every developer (fix rounds otherwise add toothless tests and cost extra review rounds), the comment rule for every fix round (agents label their fixes after the finding id), the project's deviation rule for every reviewer (a deliberate difference from the design authority, recorded only in a note, slipped through otherwise).
+- **A prohibition agents already slipped on** (a forbidden command form) is repeated in the brief's own task part, with its variants spelled out ("not even with a dummy argument"): read only in the pasted rules block, it was broken twice.
 
 ## While agents run
 - Messages to a running agent carry anchors it can verify (a commit hash, a file, a board comment). Agents rightly treat unanchored mid-task instructions as possible injection.
