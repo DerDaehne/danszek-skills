@@ -16,7 +16,8 @@ license: CC-BY-4.0
 - **One repository language** for identifiers, comments, test names, commit messages and docs. User-facing strings follow the product language and stay grammatically correct.
 - Models imitate the surrounding code more than written rules: keep the repository language even where old code deviates.
 - **Derive, don't store:** never add persistent state (marker files, name suffixes, extra columns) to make a test pass when the fact can be derived from data you already have.
-- **Lean means no unneeded features or abstractions — not dense code.** No speculative defensive branches: protect only against what can happen in the actual concurrency model.
+- **Lean means no unneeded features or abstractions — not dense code.** No speculative defensive branches: protect only against what can happen in the actual concurrency model. A guard that survives its own mutation is often unneeded (a zero-length animation ends at once anyway): delete it rather than keep it alive with a test.
+- Derive sizes from the element they act on, not from a fixed multiple of a spacing value: such a delta once cut more than the element had.
 
 ## Tests
 - Test names are sentences describing behaviour.
@@ -27,7 +28,10 @@ license: CC-BY-4.0
 - Assert the produced result, not the constant the code reads; a test that compares with the same constant cannot catch a wrong one.
 - Put identity and lookup choices (which owner, which window, which record) into a function tests can call with stand-ins, and keep at least one test through the real lookup path; a test that hands the looked-up object in directly misses a broken lookup.
 - When the unit runner cannot load the real framework or service, drive real instances over their own interface (IPC, HTTP, CLI) from a script. Keep socket paths short: Unix socket paths are limited to about 108 bytes, and a long temp dir made IPC fail without a clear error.
-- A flaky test is reproduced under synthetic load until it fails reliably, then made to wait for the event it needs, never for more time.
+- A flaky test is reproduced under synthetic load until it fails reliably, then made to wait for the event it needs, never for more time. A rare race shows faster when you widen its window than under load alone: many independent readers spread their read moments over it (load alone hit about 1 % of runs, 30 readers about 90 %).
+- Waits: request the frame you wait for, or a wait where nothing changes runs to its full timeout; give every wait helper a timing check on a negative case. Let a newly shown item finish its layout before pressing it.
+- **Hermetic tests:** a call that starts or activates a service (a retry that "starts the daemon") sits behind a replaceable function that tests stub; a private bus can still activate services installed on the host. A synthetic-input test that does nothing may run in a harness that never passes that input kind to your code: read where the input filter is installed before debugging your own code.
+- **Pixel and motion probes:** look at one captured image by eye before building assertions on it (a capture helper may not return what the screen shows; a contact sheet showed a wrong order every assertion missed). On antialiased shapes sample whole-pixel positions picked from a printed map; aim at the drawn ink, not the box (the ink-weighted centre for tight tolerances), with a clean surround (pointer parked away). Fit a whole motion curve with a start-lag tolerance instead of one mid-way sample, or hold the motion at fixed times and measure. Give pointer coordinates in scene space or relative to something that stands still; relative to a moving item they add up and a threshold test passes for the wrong reason.
 - Clean up in `finally`, including inside helpers (child processes, servers, temp dirs, timers). Skip permission-based tests when running as a privileged user.
 
 ## Commits
@@ -38,7 +42,9 @@ license: CC-BY-4.0
 - Nothing secret in errors, logs or events.
 
 ## Hygiene
-- Follow the file's indentation; prefer a formatter check over manual care.
+- Follow the file's indentation; prefer a formatter check over manual care. Run a formatter only on the hunks you changed, or read its diff: another version reformats untouched code.
+- In scripted conflict resolution, check the tools you call exist (a missing interpreter left markers that were committed), look at each hunk before deleting exact lines, and grep for markers afterwards.
+- Match the one field you mean in structured input, not its raw text: a regex over a whole JSON event also fires on a description that mentions the command.
 - **Check the diff after every scripted edit.** Edit code that contains regexes or `$` with an exact-replacement tool; substitute file contents literally (some replace functions interpret `$&` in the replacement — in JavaScript `split(a).join(b)` is literal, `replace` is not). A one-liner with an unlucky delimiter once mangled a whole file.
 - Lint the files you changed directly and read the exit status or machine-readable output: a check that stops at the first warning elsewhere hides yours, and one linter's text output stayed silent while it exited non-zero.
 - Report test names, outputs and file lists exactly as they appear — never paraphrase from commit subjects.
