@@ -27,7 +27,7 @@ Paste the blocks below verbatim into every agent brief, after the brief-specific
 - Mutation-check every new test before reporting: break the invariant its name states and confirm the test fails; for end-to-end tests that run a build artefact, rebuild first. A test that cannot fail proves nothing.
 - Code comments describe behaviour, never a review finding id, the review itself or the machine where a problem was found.
 - Before editing a shared file, run its whole related test set once; after every rebase, run the full gate, even without conflicts, and grep for conflict markers. A failure in a test you did not touch is run alone a few times before you act on it.
-- A cached check result is not a run: force a rebuild with full logs before quoting its output.
+- A cached check result is not a run: force a rebuild with full logs before quoting its output. A runner that deletes its logs on success hides your probe output: fail on purpose once to see it. Probe a committed state in a clean clone, not a tree with files copied over tracked ones; a build tool that snapshots the tree served stale source from one.
 - Run your checks after your last commit, and report test names, counts and outputs exactly as printed.
 
 ## Shared notes
