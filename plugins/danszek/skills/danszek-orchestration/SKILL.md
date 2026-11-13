@@ -6,10 +6,10 @@ license: CC-BY-4.0
 
 # Orchestration method
 
-Sections: division of labour · roles and models · planning parallel work · every agent brief contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · gates before pushing · parking, handover and durable state · design and prototype agents · capture and learn.
+Sections: division of labour · roles and models · planning parallel work · every agent brief contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · parking, handover and durable state · design and prototype agents · capture and learn.
 
 Read when the situation arises:
-- before pushing, while waiting for CI, before shipping a container or touching a shared server → [references/ci-and-delivery.md](references/ci-and-delivery.md);
+- before pushing (the gates), while waiting for CI, before shipping a container or touching a shared server → [references/ci-and-delivery.md](references/ci-and-delivery.md);
 - when agents run on a plan with usage limits, before parallel premium models, near a limit → [references/quota-guard.md](references/quota-guard.md);
 - before searching, listing, reserving numbers or editing notes in the planning tool → [references/planning-tool.md](references/planning-tool.md);
 - when a local model works tickets → [references/local-models.md](references/local-models.md);
@@ -55,6 +55,7 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - The ticket and its acceptance criteria as the authority; mark any paraphrase in the brief as yours — a paraphrased scope once inverted a protocol rule, and only the agent's own reading of the ticket caught it.
 - A time box, and which documentation to update and link.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
+- Scratch files belong to the agent that made them. Never tell a fix agent to delete a reviewer's probes "unless the re-review needs them": it judged they were not needed and the reviewer had to rebuild its runner. The owner cleans up at the end.
 - Check that the role's riskiest rules are in: the PID rule for every agent that starts servers or browsers while others run (agents otherwise reach for `pkill -f`), the mutation self-check for every developer (fix rounds otherwise add toothless tests and cost extra review rounds), the comment rule for every fix round (agents label their fixes after the finding id).
 
 ## While agents run
@@ -72,14 +73,14 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - If an agent reports that a safety guard blocked one of its actions and asks you to finish it, do not; bring the facts and the options to the user.
 
 ## Flow
-Ready (all blocking predecessors accepted) → developer agent: claim, short plan comment, own worktree and branch from current main, test first, tick tasks as they pass, work-log with real output → rebase onto current main → review → independent reviewer (on the rebased state: a repo-wide rule a ticket introduces meets everything merged meanwhile only there) → findings back to the same author, or "review ok" + fast-forward merge → human acceptance stage. **Only the human closes tickets.**
+Ready (all blocking predecessors accepted) → developer agent: claim, short plan comment, own worktree and branch from current main, test first, tick tasks as they pass, work-log with real output → rebase onto current main and run the full gate again → review → independent reviewer (on the rebased state, again after its own full gate: a rebase without a single conflict still broke tests another branch had added after the fork, and a repo-wide rule a ticket introduces meets everything merged meanwhile only there) → findings back to the same author, or "review ok" + fast-forward merge → human acceptance stage. **Only the human closes tickets.**
 
 ## Review and merge loop
 - Keep author and reviewer **continuous**: resume the same agents for fix rounds and re-reviews; they keep context and re-reviews take minutes. Switch to a **fresh reviewer** once an agent's accumulated context gets very large — resuming then costs more than re-reading.
 - A fix round on an author with a very large context goes to a fresh agent with injected state (ticket, review comment, probe files), not only for reviewers. It was cheaper and fixed every finding in one round.
 - **Sweep the review column regularly.** Two finished tickets sat unreviewed for days (one for two weeks) because nothing pointed at them; anything older than a day gets an owner or a reason.
 - Compressed diff reviewers (read, grep, run tests; no board access) fit XS diffs: cheap and fast. Keep board updates, merges and anything that needs a browser, a device or the board with a full reviewer or the orchestrator, and check their claims about CI like any other.
-- Small test-only follow-ups (reviewer-provided probes adopted verbatim) can be verified by the orchestrator with one spot mutation instead of another full review run. Ask reviewers to leave a runnable mutant script; rerunning it after the fix round is the cheapest spot check. Mutation tables in reports are claims too: one spot mutant per follow-up stays worth it. Run it while no other agent loads the machine, or re-run a surprising extra failure once before believing it; one "second failing test" was load flakiness, not the mutant.
+- Small test-only follow-ups (reviewer-provided probes adopted verbatim), and a one-line fix a reviewer made openly as its own commit (a convention the rebase met), can be verified by the orchestrator with one spot mutation instead of another full review run. Ask reviewers to leave a runnable mutant script; rerunning it after the fix round is the cheapest spot check. Mutation tables in reports are claims too: one spot mutant per follow-up stays worth it. Run it while no other agent loads the machine, or re-run a surprising extra failure once before believing it; one "second failing test" was load flakiness, not the mutant.
 - Re-read commit hashes after a rebase before citing them; `git range-diff` settles in one command whether a rebased commit is still the same change.
 - **Mutation checks run on the committed state**, and for end-to-end tests only after a rebuild when the harness runs a build artefact (a bundle, an image, a packaged app). One agent reported a fix as mutation-checked that its own backup restore had dropped; one orchestrator check passed a mutant because the build was stale.
 - New tests that wait on timing (queues, timers, live updates) run a few times under CPU pressure before the merge; a pair of such tests passed every local run and turned main red on the slower CI runner.
@@ -96,16 +97,6 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 - **Before you put a decision to the human, look for an earlier one** in the ticket's comments. A review agent asked again a question the human had answered six days before. Also name the exact scope you ask about: when a proposal points to a larger decision record, list which of its parts the question covers. An acceptance that ticked "the record" would have approved a migration nobody had asked about.
 - **An acceptance finding that does not reproduce locally:** first rebuild the reporter's setup with a real clock and the real input, then ask a few structured questions whose answers each rule out a hypothesis (device and input, browser, page, and what the visible state did right up to the failure). "The counter stood until the notice vanished" ruled out three of four hypotheses at once, because every path that ends a hold makes the counter run again. Production data stays the human's; ask for a capture (network, console) instead of reading it.
 - **A blocker in a dependency the team itself maintains is fixed upstream first.** File the gaps there with a concrete proposal each, then ask the human. Never make the human pick between workarounds before naming the actual problem: a question that offered "partial, status quo, or wait" got "what is the problem here? file it and propose fixes" back. One day later the upstream release closed 16 of 19 gaps, and the adoption grew from 138 to 238 removed lines.
-
-## Gates before pushing
-1. Private-pattern scan over the outgoing diff, commit messages and file names. On a **first push**, scan every commit's patch, not just the final tree: a reference removed in a later commit still sits in history. If the repository was never pushed, squash before publishing.
-2. Scan for internal references (comment ids, note links).
-3. Secret scanner over history and staged changes.
-4. Fast-forward push; watch CI and code scanning to green.
-- In Claude Code, put these gates into `scripts/pre-push-gate`: the plugin's push guard runs it before every push the agent starts and blocks the push when it fails (plugin README, "Push guard hook").
-- **Prove each gate sees what it guards:** plant a violation once on the exact path the gate runs. A privacy scan that checked "unpushed commits" ran in a checkout where HEAD equalled the remote, saw zero commits and reported clean; a gate should report how much it saw, and "saw nothing" is a failure.
-- Scope secret scans to the outgoing commits when worktrees share refs (a sibling's unpushed test nonce blocked an unrelated merge), and let CI scan the full pushed history. Narrowing a security gate is the user's decision: ask with the trade-off, never just do it. Generate secret-shaped test data at runtime instead of committing literals.
-- After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).
 
 ## Parking, handover and durable state
 - **After stopping agents, read the board before writing handovers.** An agent's last steps are its board comment and column move, which the worktree does not show; twice a stopped agent had posted its final result seconds before the stop, and a handover written from the git state alone sent the next agents to redo finished work.
