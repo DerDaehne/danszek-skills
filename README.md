@@ -133,6 +133,8 @@ into its system prompt, project instructions or `AGENTS.md`. Keep the `descripti
   cd plugins/danszek && claude plugin eval . --runs 1 --ablation none --no-publish
   ```
 
+  Write eval prompts the skill can answer without a lookup first: a prompt that makes the model search before the skill would load runs out of turns and fails for the wrong reason.
+
 The skills are refined in regular retrospectives as new lessons come in.
 
 ## License
