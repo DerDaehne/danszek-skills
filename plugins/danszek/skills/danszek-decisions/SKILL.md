@@ -22,6 +22,7 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
   - **what the design system says**, quoted — or, when it is silent or contradicts itself, a plain statement that it is, instead of an invented rule; such a gap becomes a report to the design system's owners, phrased independently of this project's platform;
   - **the options side by side,** at real size, in the states that matter (light/dark, narrow width, focus, empty and full);
   - **the recommendation first and marked,** with a one-line reason.
+- **The dense case,** not only a sparse mock: a stagger formula picked from a sparse mock let rows overtake each other on a populated screen and ran 524 ms instead of 340.
 - **Motion** plays on demand with a replay and a slow-motion control (e.g. a quarter of the speed); a looped animation hides where it starts and ends.
 - **Gestures** (drag, swipe, pull) get a slider that scrubs the progress, so every intermediate frame can be inspected.
 - Picks: one choice per decision id plus an optional free-text note, and a visible "answered / open" state per section.
@@ -40,6 +41,7 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
   ```
   `page-template.html` is your copy of the template with the sections filled in. `build` replaces each `/*@inline:NAME@*/` placeholder literally and then runs `verify`; `verify` exits non-zero and names the first missing line when the page no longer holds a source file byte for byte. Re-run `verify` after every later edit of the page.
 - Where no Python is available, check which interpreters the build environment really has before writing a generator, and substitute file contents literally: some replace functions interpret `$&` and similar sequences in the replacement text (in JavaScript, `split(placeholder).join(content)` is literal, `String.replace` is not), which silently corrupts an inlined stylesheet — the byte-identity check catches it.
+- When a shipped motion "feels off", log the running program's real per-element plan and check the mock against one measured frame before drawing options: it separates "built wrong" from "designed wrong". Web animations are captured frame-exactly headless by pausing them and setting `currentTime`. A platform's global animation-speed setting may only tell instant from normal; slow down through the duration tokens in a throwaway copy instead.
 - Animation APIs may not resolve CSS custom properties (Web Animations' `easing` does not take `var()`); read the computed value and pass the literal.
 - Headless browsers can enforce a minimum window width; read the real viewport width before trusting a "phone width" check.
 
