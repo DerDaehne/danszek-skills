@@ -16,7 +16,7 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
 - Before asking, look for an earlier answer in the ticket, its comments and the decision records; ask only what is really open, and name its scope.
 
 ## What the page shows
-- **The real design system, not a lookalike.** Inline its token file and component stylesheet into the page *byte-identical*: copy them by script, never retype or "clean up", and verify by script that every inlined block equals its source (e.g. the page text contains each source file's exact content). Inline both: a component stylesheet without its tokens defines no values and renders blank. Options are drawn with the system's own components and tokens; only the variant under decision differs.
+- **The real design system, not a lookalike.** Inline its token file and component stylesheet into the page *byte-identical*: copy them by command, never retype or "clean up", and verify by command that every inlined block equals its source (e.g. the page text contains each source file's exact content). Inline both: a component stylesheet without its tokens defines no values and renders blank. Options are drawn with the system's own components and tokens; only the variant under decision differs.
 - **One section per decision,** each with a stable id:
   - **context**: what is being decided and why now, with source citations (file:line in the design system, the ticket, the code) — every citation checked against the source before publishing;
   - **what the design system says**, quoted — or, when it is silent or contradicts itself, a plain statement that it is, instead of an invented rule; such a gap becomes a report to the design system's owners, phrased independently of this project's platform;
@@ -35,19 +35,21 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
 
 ## Building it
 - Start from the previous decision page of the project, or from [assets/decision-page.html](assets/decision-page.html) for the first one: one section per decision with its stable id, play and slow motion for `[data-motion]`, a progress slider for `[data-gesture]`, picks with note and open/answered state, an export of the page's own picks, and a `store` with `load`/`save` to point at the host's shared store (it falls back to browser storage).
-- Inline and verify with the bundled script (Python 3, standard library only; paths relative to this skill's directory):
+- Inline by hand, in your copy of the template with the sections filled in: replace each `/*@inline:NAME@*/` placeholder (once each) with the exact bytes of its source file, then verify that the page holds every source byte for byte. A source containing `</style` would end its style element early. A one-off example (Python's `bytes.replace` is literal):
   ```sh
-  python3 scripts/inline.py build page-template.html page.html tokens=path/to/tokens.css components=path/to/components.css
-  python3 scripts/inline.py verify page.html path/to/tokens.css path/to/components.css
+  python3 -c 'import sys; t,o,*f = sys.argv[1:]; p = open(t,"rb").read()
+  for n,s in zip(("tokens","components"), f): p = p.replace(b"/*@inline:%s@*/" % n.encode(), open(s,"rb").read())
+  open(o,"wb").write(p)' page-template.html page.html tokens.css components.css
+  python3 -c 'import sys; p = open(sys.argv[1],"rb").read(); sys.exit(any(open(s,"rb").read() not in p for s in sys.argv[2:]))' page.html tokens.css components.css && echo verified
   ```
-  `page-template.html` is your copy of the template with the sections filled in. `build` replaces each `/*@inline:NAME@*/` placeholder literally and then runs `verify`; `verify` exits non-zero and names the first missing line when the page no longer holds a source file byte for byte. Re-run `verify` after every later edit of the page.
+  Re-run the verification after every later edit of the page.
 - Where no Python is available, check which interpreters the build environment really has before writing a generator, and substitute file contents literally: some replace functions interpret `$&` and similar sequences in the replacement text (in JavaScript, `split(placeholder).join(content)` is literal, `String.replace` is not), which silently corrupts an inlined stylesheet — the byte-identity check catches it.
 - When a shipped motion "feels off", log the running program's real per-element plan and check the mock against one measured frame before drawing options: it separates "built wrong" from "designed wrong". Web animations are captured frame-exactly headless by pausing them and setting `currentTime`. A platform's global animation-speed setting may only tell instant from normal; slow down through the duration tokens in a throwaway copy instead.
 - Animation APIs may not resolve CSS custom properties (Web Animations' `easing` does not take `var()`); read the computed value and pass the literal.
 - Headless browsers can enforce a minimum window width; read the real viewport width before trusting a "phone width" check.
 
 ## Before publishing (the orchestrator, not only the page agent)
-1. Run the byte-identity check yourself (`scripts/inline.py verify`).
+1. Run the byte-identity check yourself.
 2. Read the whole page: everything except the inlined design system is the agent's own drawing and can be wrong.
 3. Render it (light, dark, narrow) and look at every section; play every motion.
 4. Check every citation and every quoted rule against its source.

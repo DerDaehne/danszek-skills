@@ -1,9 +1,19 @@
 # CI and delivery
 
-Read this before pushing, while waiting for CI, and before shipping a container or touching a shared server. Everything in the main skill applies too. On GitHub, `scripts/ci-wait.sh EXPECTED [REF] [TIMEOUT]` in this skill's directory is the saved wait loop the first two rules ask for: it resolves the full hash, waits until the expected number of workflows has a finished run, prints each result and exits non-zero on a failure or a timeout.
+Read this before pushing, while waiting for CI, and before shipping a container or touching a shared server. Everything in the main skill applies too.
 
-- **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint, packaging) can stay unnoticed for days otherwise: two workflows once stayed red for six days because the push routine checked only the local gates, although this rule already existed. Put the check into the push routine itself (a saved script that lists every run of the full pushed hash) and look again a few minutes later, when the slow workflows finish. When the pushed work came from an external issue (a bug report moved into the board), comment on or close that issue in the same routine: one sat open for hours after its fix was merged.
-- Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running. Query by the full commit hash (resolve it with `git rev-parse` first): a short hash returned an empty list, and a loop that read the empty list as "not yet" waited silently until its timeout. Keep that loop as a saved script and call it; retyped inline under time pressure, the same text-match bug came back despite this rule.
+- **After every push, check every workflow on the pushed commit**, not just the one you were waiting for. A red side workflow (secret scan, lint, packaging) can stay unnoticed for days otherwise: two workflows once stayed red for six days because the push routine checked only the local gates, although this rule already existed. Put the check into the push routine itself (the loop below lists every run of the full pushed hash) and look again a few minutes later, when the slow workflows finish. When the pushed work came from an external issue (a bug report moved into the board), comment on or close that issue in the same routine: one sat open for hours after its fix was merged.
+- Wait loops for CI count pending runs with a JSON query and require the expected number of workflows; a text-match condition once ended the wait while three of four workflows were still running. Query by the full commit hash (resolve it with `git rev-parse` first): a short hash returned an empty list, and a loop that read the empty list as "not yet" waited silently until its timeout. Copy this loop (GitHub CLI) instead of retyping it: retyped from memory under time pressure, the same text-match bug came back despite this rule.
+  ```sh
+  sha=$(git rev-parse --verify 'HEAD^{commit}'); expected=4; q='group_by(.workflowName) | map(.[0])'
+  for _ in $(seq 60); do   # 30 minutes
+    read -r found pending < <(gh run list --commit "$sha" --limit 100 --json workflowName,status \
+      --jq "$q"' | "\(length) \(map(select(.status != "completed")) | length)"')
+    [ "$found" -ge "$expected" ] && [ "$pending" -eq 0 ] && break; sleep 30
+  done
+  gh run list --commit "$sha" --limit 100 --json workflowName,status,conclusion --jq "$q"'[] | [.workflowName, .status, .conclusion] | @tsv'
+  ```
+  Green means as many lines as expected, each `completed` with `success`, `skipped` or `neutral`; fewer lines or one still running is a timeout, not a pass.
 - Back-to-back merges let CI's concurrency rule cancel the earlier commit's run; confirm that the newer run contains that commit and is green instead of treating "cancelled" as a failure or as a pass.
 - When CI fails but every local run is green, read the CI artifacts first (page snapshot, trace, server log) for concrete IDs and state before more local reproduction attempts: an ID of 1 in a long suite once exposed database ID reuse that no local timing reproduced.
 - **Treat a first CI-only failure as a lead, not noise.** Slow runners are where races show: a two-process file-watch test (an atomic replace, then a quick second one) failed only in CI and exposed a real race the local gate never hit.
@@ -21,7 +31,7 @@ Read this before pushing, while waiting for CI, and before shipping a container 
 2. Scan for internal references (comment ids, note links).
 3. Secret scanner over history and staged changes.
 4. Fast-forward push; watch CI and code scanning to green.
-- In Claude Code, put these gates into `scripts/pre-push-gate`: the plugin's push guard runs it before every push the agent starts and blocks the push when it fails (plugin README, "Push guard hook").
+- Run these gates before every push, yours and every agent's, and never push while one fails or did not run. A project that wants this enforced may add its own hook (a git `pre-push` hook, or a hook in the agent host that runs the gates before a push); these skills ship none.
 - **Prove each gate sees what it guards:** plant a violation once on the exact path the gate runs. A privacy scan that checked "unpushed commits" ran in a checkout where HEAD equalled the remote, saw zero commits and reported clean; a gate should report how much it saw, and "saw nothing" is a failure.
 - Scope secret scans to the outgoing commits when worktrees share refs (a sibling's unpushed test nonce blocked an unrelated merge), and let CI scan the full pushed history. Narrowing a security gate is the user's decision: ask with the trade-off, never just do it. Generate secret-shaped test data at runtime instead of committing literals.
 - After merges, refresh dependencies in the main checkout before running local checks — and in a worktree after rebasing it onto a main that added dependencies (type errors that vanish after `npm ci` are not findings).
