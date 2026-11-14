@@ -21,7 +21,8 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
   - **context**: what is being decided and why now, with source citations (file:line in the design system, the ticket, the code) — every citation checked against the source before publishing;
   - **what the design system says**, quoted — or, when it is silent or contradicts itself, a plain statement that it is, instead of an invented rule; such a gap becomes a report to the design system's owners, phrased independently of this project's platform;
   - **the options side by side,** at real size, in the states that matter (light/dark, narrow width, focus, empty and full);
-  - **the recommendation first and marked,** with a one-line reason.
+  - **the recommendation first and marked,** with a one-line reason. A recommendation that rests on a number (a gap, a duration, a width) shows that number measured or modelled, not argued: a faithful model on the page contradicted a recommendation built on reasoning alone.
+- **Options stay within the design system's own limits** (maximum widths, duration caps): a chosen mock that quietly broke such a limit had to be redrawn after it was built.
 - **The dense case,** not only a sparse mock: a stagger formula picked from a sparse mock let rows overtake each other on a populated screen and ran 524 ms instead of 340.
 - **Motion** plays on demand with a replay and a slow-motion control (e.g. a quarter of the speed); a looped animation hides where it starts and ends.
 - **Gestures** (drag, swipe, pull) get a slider that scrubs the progress, so every intermediate frame can be inspected.
