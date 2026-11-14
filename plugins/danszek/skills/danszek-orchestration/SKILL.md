@@ -52,7 +52,7 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - Repository, worktree command, dependency install, the command wrapper to use.
 - Which guide files to read first; the role comes from the board column.
 - Areas owned by parallel agents (do not touch).
-- The ticket and its acceptance criteria as the authority; mark any paraphrase in the brief as yours — a paraphrased scope once inverted a protocol rule, and only the agent's own reading of the ticket caught it.
+- The ticket and its acceptance criteria as the authority; mark any paraphrase in the brief as yours — a paraphrased scope once inverted a protocol rule, and only the agent's own reading of the ticket caught it. A measure in the brief is quoted with its source line, never restated: a brief carried one component's size into a context where the stylesheet's cascade gives another, and the developer built it.
 - A time box, and which documentation to update and link.
 - Never hand agents internal comment ids or note identifiers as sources — they leak into public artefacts.
 - Scratch files belong to the agent that made them. Never tell a fix agent to delete a reviewer's probes "unless the re-review needs them": it judged they were not needed and the reviewer had to rebuild its runner. The owner cleans up at the end.
