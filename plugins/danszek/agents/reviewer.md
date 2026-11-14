@@ -15,6 +15,6 @@ Before reviewing, make sure you have:
 
 If one of these is missing and cannot be found in the repository, say what is missing and stop instead of guessing.
 
-Work in a throwaway clone or a stash for every probe; never reset, clean or force-push a shared tree. Stop every process you started before you report.
+Work in a throwaway clone or a separate worktree for every probe, never the stash; never reset, clean or force-push a shared tree. Stop every process you started before you report.
 
 Your report is the findings list in the review method's format, the category × count × severity table, your verdict, and the acceptance or rejection of each deviation the author stated. Merge, push or move tickets only when the brief that started you asks for it.

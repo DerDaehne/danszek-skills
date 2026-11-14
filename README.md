@@ -89,7 +89,8 @@ into its system prompt, project instructions or `AGENTS.md`. Keep the `descripti
 - **No executable scripts or hooks; skills are text.** Users cannot vet the privacy and security of code a
   skill ships, and a hook runs it on their machine unasked. A rule may carry a short command example in
   Markdown; enforcement (a pre-push hook, a CI check) is each project's own to add.
-- One rule per bullet, dense, generic: no personal names, no project or company internals, no paths or hosts.
+- One rule per bullet, dense, generic: no personal names, no project or company internals, no paths or hosts,
+  and no rule tied to the stack it was learned on (state the lesson, at most with a neutral example).
 - Explain *why* only where the rule is not self-evident; prefer a concrete failure the rule prevents.
 - Frontmatter holds only `name`, `description` and `license`: claude.ai uploads and the Skills API reject
   Claude-Code-only keys such as `argument-hint` or `disable-model-invocation`. Descriptions say what the

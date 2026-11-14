@@ -44,7 +44,7 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
   ```
   Re-run the verification after every later edit of the page.
 - Where no Python is available, check which interpreters the build environment really has before writing a generator, and substitute file contents literally: some replace functions interpret `$&` and similar sequences in the replacement text (in JavaScript, `split(placeholder).join(content)` is literal, `String.replace` is not), which silently corrupts an inlined stylesheet — the byte-identity check catches it.
-- When a shipped motion "feels off", log the running program's real per-element plan and check the mock against one measured frame before drawing options: it separates "built wrong" from "designed wrong". Web animations are captured frame-exactly headless by pausing them and setting `currentTime`. A platform's global animation-speed setting may only tell instant from normal; slow down through the duration tokens in a throwaway copy instead.
+- When a shipped motion "feels off", log the running program's real per-element plan and check the mock against one measured frame before drawing options: it separates "built wrong" from "designed wrong". Web animations are captured frame-exactly headless by pausing them and setting `currentTime`. To watch a motion slowly, scale its duration tokens in a throwaway copy rather than trusting a global speed setting.
 - Animation APIs may not resolve CSS custom properties (Web Animations' `easing` does not take `var()`); read the computed value and pass the literal.
 - Headless browsers can enforce a minimum window width; read the real viewport width before trusting a "phone width" check.
 
