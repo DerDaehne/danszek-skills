@@ -23,6 +23,7 @@ license: CC-BY-4.0
 - **Read the reference implementation next to the prose docs** of a dependency or design system: the code settles details the prose leaves vague and exposes contradictions. Before calling something a defect or a deviation, put the reference's formula next to the code and check that the two really give different results: several "defects" were the design system's own rule playing out, and a change a code marker flagged gave the same result in every case.
 - **Interplay rule:** when a rule or behaviour changes, list every other component that consumes the same data (search callers) and add an acceptance criterion for the interplay. Missing this is how a correct-looking change breaks a neighbour.
 - **Edge cases become criteria**, not prose ("only future-dated entries exist", "equal timestamps", "a non-human actor tries the human-only action").
+- **A rule the specification requires is never "a follow-up if wanted".** Leaving it out is a fidelity gap that reviewers treat as a finding; put it into the criteria.
 - **Dependencies:** "A blocks B" means A must be finished before B starts. Read direction carefully; justify non-obvious links.
 - Two tickets that touch the same files: write down the interface one promises to keep and add a blocks link, instead of "coordinate".
 - A global switch one feature needs (a setting that also changes every other screen or mode) has side effects elsewhere; name them to the human as part of the product question.

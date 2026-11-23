@@ -12,6 +12,7 @@ Read this before running mutation probes, in a review or on your own tests. The 
 ## The mutant must be real
 - Confirm a non-empty diff (a substitution that matched nothing once "confirmed" an unchallenged test) and valid code (one mutant "failed" only because the engine lacked a function it called; read the failure message).
 - Confirm it changes behaviour: deleting a property set to its library default changes nothing, so look up the default and mutate to the opposite; a mutated rule that another check also enforces is a no-op; a mutant in a caller that only feeds a path the callee returns early on changes nothing. Replacing a fixed wait by firing its timer can silently drop a deferred call the wait let run; probe every such swap.
+- **A mutant that swaps two values equal under the default settings survives every test.** Tests for "follows the configured value" need a value that differs from every default it could fall back to. Run each mutant on its own: mutants applied together prove nothing per rule.
 - **Narrow it to the state under discussion.** To test a deliberate *absence* of a guard, block exactly that state: a mutation that blocks every call also kills the follow-up calls and looks "caught".
 - A mutant the author declares "equivalent" needs a proof or a probe; one such claim hid a real effect on a later question.
 

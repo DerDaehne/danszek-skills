@@ -25,6 +25,7 @@ Read this before pushing, while waiting for CI, and before shipping a container 
 - **A scheduled check reports where someone reads it, and you read its result daily.** A nightly stress run commented its failure into a tracker issue for a week while two releases shipped; nobody looked at the issue, and once the first step failed, the browser tests behind it never ran at all.
 - Before swapping a live container, smoke-test the new image on a spare port with an empty data directory (start, health, one negative-config start) **and** with a copy of the latest backup, so a pending migration runs on real data first; after the swap, compare row counts of the automatic pre-migration backup and the live database. Keep the previous image tag ready for rollback, and never move or overwrite a published tag: a broken release gets the next version, with the reason in the tag message.
 - Adding a site to a shared reverse proxy: back up the config, append only, validate, reload gracefully (never restart), and check the existing sites before and after.
+- **A release step that can fail after the tag is published:** delete the orphan tag and fix forward with a new one. Never reuse or force-move a published tag. Why: consumers may already hold it.
 
 ## Gates before pushing
 1. Private-pattern scan over the outgoing diff, commit messages and file names. On a **first push**, scan every commit's patch, not just the final tree: a reference removed in a later commit still sits in history. If the repository was never pushed, squash before publishing.

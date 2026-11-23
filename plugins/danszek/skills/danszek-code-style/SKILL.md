@@ -28,6 +28,7 @@ license: CC-BY-4.0
 - Assert the produced result, not the constant the code reads; a test that compares with the same constant cannot catch a wrong one.
 - Assert the state before the change too: an integration test that checks only the state afterwards also passes on the old code.
 - **Reproduce the real event order.** Log the order the real source delivers events (which handler runs first, which loop turn each arrives in) before trusting a suspected cause or swapping a state flag: tests that simulated the assumed order all passed while the real bug stayed, and a flag that looked right flipped before the old handler ran. Deliver events in separate loop turns when the source does (a debounce or deferred call hid a stale value when the setup sent them in one), and drive a feature through its real upstream chain (the request through the real dispatcher, the value from the real service) rather than the component's setters.
+- **Prove a race with a small test that fails on the unchanged code,** not by reasoning about the order of events. When input can arrive before an asynchronous system answers, compare a new request with the last request you made, not with the system's current state. Why: that state may not have caught up yet.
 - An object scheduled for destruction can linger until the event loop runs: check the object's own end state, not its absence from a list.
 - A bug with two triggers gets one test per trigger: each mutant once caught only one of them.
 - Test a key or event handler's return value (consumed or passed on), not only the state it changes.
@@ -55,6 +56,7 @@ license: CC-BY-4.0
 - In scripted conflict resolution, check the tools you call exist (a missing interpreter left markers that were committed), look at each hunk before deleting exact lines, and grep for markers afterwards. Anchor scripted edits on text, not line numbers: an insert above shifts every later number.
 - Match the one field you mean in structured input, not its raw text: a regex over a whole JSON event also fires on a description that mentions the command.
 - **Check the diff after every scripted edit.** Edit code that contains regexes or `$` with an exact-replacement tool; substitute file contents literally (some replace functions interpret `$&` or `` $' `` in the replacement — in JavaScript `split(a).join(b)` is literal, `replace` is not). A one-liner with an unlucky delimiter once mangled a whole file.
+- **A script that runs inside a tool with its own macro or escape layer** (a packaging spec, a template engine, a CI file): check the expanded result with that tool's own expander, and prefer forms without backslashes. Why: counting escapes by eye fails, and the error shows only at the last stage.
 - Lint the files you changed directly and read the exit status or machine-readable output: a check that stops at the first warning elsewhere hides yours, and one linter's text output stayed silent while it exited non-zero.
 - Report test names, outputs and file lists exactly as they appear — never paraphrase from commit subjects.
 - New dependencies only with a justification; standard library → platform → package.

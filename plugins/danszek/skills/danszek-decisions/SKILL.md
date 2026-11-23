@@ -53,6 +53,7 @@ A human decides faster and better on what they can see. Words like "subtle", "sn
 2. Read the whole page: everything except the inlined design system is the agent's own drawing and can be wrong.
 3. Render it (light, dark, narrow) and look at every section; play every motion.
 4. Check every citation and every quoted rule against its source.
+   Take the list of citable files from the source project itself, not a hand-made list, before trusting a line-number remap, and check that every moved reference reads the same text at both versions.
 5. Privacy: the page is shareable; nothing private or internal belongs on it.
 
 ## After the human picked
