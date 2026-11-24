@@ -90,7 +90,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 
 ## Tickets, acceptance and the human
 - **Hand work to the human only with every acceptance task ticked.** Evidence in a comment is not a tick: two tickets reached the acceptance column that way and the human could not close them. Re-read the task list right before the move; a task only the human can do keeps the ticket one column earlier.
-- **A task the executing agent cannot fulfil** (needs a push, a human, a later merge) is marked as such when it is written; otherwise the agent either stalls or moves on with an open task.
+- **A task the executing agent cannot fulfil** (needs a push, a human, a later merge) is marked as such when it is written; otherwise the agent either stalls or moves on with an open task. The rule "a task you cannot fulfil stays open" was once read as permission to skip one the agent found laborious (a before-and-after image sequence); send such a ticket back to its author before the review starts.
 - A criterion joined by "and" is several checks: tick it only when every clause has evidence, and say which clause is still open.
 - **A reworded acceptance criterion is proven anew.** Rewording a ticked task keeps its tick and certifies a criterion nobody has checked; reopen it or add a new task, and tell the developer explicitly.
 - Approval and refinement comments state only verified facts and mark assumptions. A wrong claim in an approval travelled into the developer's docs and commit message.
@@ -102,6 +102,7 @@ Ready (all blocking predecessors accepted) → developer agent: claim, short pla
 ## Parking, handover and durable state
 - **After stopping agents, read the board before writing handovers.** An agent's last steps are its board comment and column move, which the worktree does not show; twice a stopped agent had posted its final result seconds before the stop, and a handover written from the git state alone sent the next agents to redo finished work.
 - **Keep the orchestration kit out of directories a reboot wipes.** The agents' rules file, the quota watcher and probe scripts lived in a session scratch directory under `/tmp`; three reboots emptied it, and each time the kit had to be rebuilt from memory before any agent could start. Keep the canonical copy somewhere durable (outside the repository if it holds local paths) and copy it in.
+- **A long pause stops every check that lives in the session.** Scheduled checks ran as session jobs; during a four-week pause the nightly run was red every night and a security audit job turned red on the main branch, and nobody saw either, although a notification had been recommended before. Before a pause longer than a few days, hand the checks to something that outlives the session (a notification the human really reads, a hosted schedule), and on return read the whole history since the pause before starting new work. A check that runs only on push or pull request (a dependency audit) never runs on a quiet main branch: schedule it too.
 - **Reports a ticket relies on live in the ticket** (a comment or attachment) or a note, never only in a scratch file: a review report that a ticket pointed to sat in a session temp dir, a reboot took it, and the next developer had to rebuild its list of findings.
 
 ## Design and prototype agents
