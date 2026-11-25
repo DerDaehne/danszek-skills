@@ -11,6 +11,7 @@ working style, communication style and review culture, kept generic and free of 
 | `danszek-review` | independent review with own runs, measurements on the real surface and mutation probes |
 | `danszek-decisions` | putting visual, motion or far-reaching product decisions to a human as a page drawn with the real design system (page template included) |
 | `danszek-orchestration` | running frontier subagents and local models through a board safely (agent-rules template included) |
+| `danszek-prioritization` | an orchestrator's long-range priorities: one global plan, ranking by cost of delay, interjected requests priced in before they start, long-term goals guarded (plan template included) |
 | `danszek-code-style` | writing or reviewing code humans must understand by reading |
 
 Each skill is a folder with a `SKILL.md` (YAML frontmatter `name`, `description` and `license`, then

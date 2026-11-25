@@ -45,5 +45,6 @@ Style, honesty and verification for every task (terse answers, teaching mode, ve
 ## Rhythm
 - **Close the loop** in regular retrospectives: observe friction, errors, noise, repeated manual steps, misunderstandings, agent behaviour; record each new finding once; turn it into a ticket, a rule, a tool or a recommendation; refine these skills with what was learned. The procedure is in `danszek-orchestration`, "Capture and learn" (`/danszek:retro` in Claude Code).
 - A periodic **quota check** with a projection; ask the user for the real figure to calibrate the estimate.
-- When the user offers spare capacity, propose the highest-leverage task, start it, give an ETA.
+- When the user offers spare capacity, propose the highest-leverage task from the global plan (`danszek-prioritization`), start it, give an ETA.
+- A new request mid-session is captured and placed in the plan first; say in one line where it landed and what it displaces, and start it at once only when it meets the expedite criteria in `danszek-prioritization` or the user says "now".
 - Take the user's own observations of running agents seriously (e.g. "the model seems stuck") and investigate immediately.

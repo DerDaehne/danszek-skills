@@ -9,6 +9,7 @@ license: CC-BY-4.0
 Sections: division of labour · roles and models · planning parallel work · every agent brief contains · while agents run · flow · review and merge loop · tickets, acceptance and the human · parking, handover and durable state · design and prototype agents · capture and learn.
 
 Read when the situation arises:
+- when a request arrives while agents run, when choosing what to start in a free slot, at session start and end, or when goals and budget compete → load `danszek-prioritization` (the global plan, ranking, interjections);
 - before pushing (the gates), while waiting for CI, before shipping a container or touching a shared server → [references/ci-and-delivery.md](references/ci-and-delivery.md);
 - when agents run on a plan with usage limits, before parallel premium models, near a limit → [references/quota-guard.md](references/quota-guard.md);
 - before searching, listing, reserving numbers or editing notes in the planning tool → [references/planning-tool.md](references/planning-tool.md);
@@ -41,6 +42,7 @@ Practically all work is done by agents; the human and the orchestrator only stee
 - Refiners **never promote their own work** to ready: an independent reviewer approves the refinement (and any unsplit L ticket).
 
 ## Planning parallel work
+- What runs next, and in which order, comes from the global plan (`danszek-prioritization`); this section covers how to run it safely.
 - Limit parallel agents (e.g. 3). Assign tickets with **disjoint files** and tell each agent which areas belong to others.
 - **Check blocking predecessors yourself before spawning a developer**; an agent that correctly stops on a blocker still costs a spawn. Also check how old the refinement is: a ticket refined days ago, while the files it names changed since, goes to a short re-check first instead of a developer.
 - Files are not always disjoint (shared layout, shell, store). Then **fix the merge order up front**: the second reviewer reviews in parallel but merges only after the first has landed, rebasing and re-running all gates and the end-to-end check.
